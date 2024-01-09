@@ -89,15 +89,14 @@ AUTH_USER_MODEL = 'perfiles.Perfil'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tracy_be',
-        'USER': 'cashogomez',
-        'PASSWORD': 'CashoPower,2023',
-        'HOST': 'localhost',
-        'PORT': '',
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "postgresql"),
+        "USER": os.environ.get("SQL_USER", "cashogomez"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "CashoPower,2023"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 

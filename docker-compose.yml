@@ -10,4 +10,16 @@ services:
       - 8000:8000
     env_file:
       - ./.env.dev
-      
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=cashogomez
+      - POSTGRES_PASSWORD=CashoPower,2023
+      - POSTGRES_DB=tracy_be
+
+volumes:
+  postgres_data:
