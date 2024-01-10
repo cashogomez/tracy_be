@@ -94,7 +94,7 @@ DATABASES = {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
         "NAME": os.environ.get("SQL_DATABASE", "tracy_be"),
         "USER": os.environ.get("SQL_USER", "cashogomez"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "CashoPower,2023"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "CashoPower,2024"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
