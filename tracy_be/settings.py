@@ -92,7 +92,7 @@ AUTH_USER_MODEL = 'perfiles.Perfil'
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "postgresql"),
+        "NAME": os.environ.get("SQL_DATABASE", "tracy_be"),
         "USER": os.environ.get("SQL_USER", "cashogomez"),
         "PASSWORD": os.environ.get("SQL_PASSWORD", "CashoPower,2023"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),

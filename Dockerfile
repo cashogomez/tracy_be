@@ -8,8 +8,10 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-#INSTALL miniconda
+
+#INSTALL system dependency and miniconda
 RUN apt-get update \
+    && apt-get install -y netcat \
     && apt-get install -y build-essential \
     && apt-get install -y wget \
     && apt-get clean \
@@ -38,5 +40,14 @@ RUN conda install -c conda-forge djangorestframework
 RUN pip install djangorestframework-simplejwt
 RUN pip install django-filter
 RUN pip install gunicorn
+
+# copy entrypoint.sh
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh
+
 # copy project
 COPY . .
+
+# run entrypoint.sh
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
