@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED 1
 
 #INSTALL system dependency and miniconda
 RUN apt-get update \
-    && apt-get install -y netcat \
+    && apt-get install -y netcat-traditional \
     && apt-get install -y build-essential \
     && apt-get install -y wget \
     && apt-get clean \
