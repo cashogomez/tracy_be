@@ -1,5 +1,9 @@
+###########
+# BUILDER #
+###########
+
 # pull official base image
-FROM --platform=linux/amd64 python:3.12.1-bookworm
+FROM --platform=linux/amd64 python:3.12.1-bookworm as builder
 
 # set work directory
 WORKDIR /usr/src/app
@@ -8,46 +12,58 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc
 
-#INSTALL system dependency and miniconda
-RUN apt-get update \
-    && apt-get install -y netcat-traditional \
-    && apt-get install -y build-essential \
-    && apt-get install -y wget \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# lint
+RUN pip install --upgrade pip
+COPY . /usr/src/app/
 
-# Install miniconda
-ENV CONDA_DIR /opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-    /bin/bash ~/miniconda.sh -b -p /opt/conda
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels imutils pandas scikit-learn Django pillow psycopg2 djangorestframework djangorestframework-simplejwt django-filter gunicorn
 
-# Put conda in path so we can use conda activate
-ENV PATH=$CONDA_DIR/bin:$PATH
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM --platform=linux/amd64 python:3.12.1-bookworm
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create the app user
+RUN addgroup --system app && adduser --system --group app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+WORKDIR $APP_HOME
+
 # install dependencies
-RUN conda create --name cashopower pip
-RUN pip install imutils
+RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
+COPY --from=builder /usr/src/app/wheels /wheels
+#COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
 
-#RUN conda install -c conda-forge opencv
-#RUN conda install -c conda-forge dlib
-RUN conda install -c conda-forge pandas
-RUN conda install -c conda-forge scikit-learn
-RUN conda install -c conda-forge Django
-RUN conda install -c conda-forge pillow
-RUN conda install -c conda-forge psycopg2
-RUN conda install -c conda-forge djangorestframework
-
-RUN pip install djangorestframework-simplejwt
-RUN pip install django-filter
-RUN pip install gunicorn
-
-# copy entrypoint.sh
+# copy entrypoint.prod.sh
 COPY ./entrypoint.sh .
-RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.sh
+RUN chmod +x  $APP_HOME/entrypoint.sh
 
 # copy project
-COPY . .
+COPY . $APP_HOME
 
-# run entrypoint.sh
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
+
+# run entrypoint.prod.sh
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]
