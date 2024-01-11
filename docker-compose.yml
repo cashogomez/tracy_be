@@ -2,24 +2,36 @@ version: '3.8'
 
 services:
   web:
-    image: cashogomez/tracybe:latest
-    restart: always
-    #command: python manage.py runserver 0.0.0.0:8000
-    command: gunicorn tracy_be.wsgi:application --bind 0.0.0.0:8000
-    ports:
-      - 8000:8000
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: gunicorn hello_django.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    expose:
+      - 8000
     env_file:
       - ./.env.prod
     depends_on:
       - db
   db:
     image: postgres:latest
-    ports:
-      - 2432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod.db
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
