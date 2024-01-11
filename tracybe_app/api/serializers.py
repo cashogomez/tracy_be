@@ -1,16 +1,24 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento, Set, Empaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracy_be.perfiles.api.serializers import PerfilSerializer
+from tracybe_app.models import (Instrumento, Puesto, Set, Empaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
+
+class PuestoSerializer(serializers.ModelSerializer):
+    listapuestoperfil = PerfilSerializer(many=True, read_only = True)
+    class Meta:
+        model = Puesto
+        fields = '__all__'
 
 class EventoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evento
         exclude = ['empaque']
         #fields = '__all__'
-        
+
 class AreaSolicitanteSerializer(serializers.ModelSerializer):
+    listaareaperfil = PerfilSerializer(many=True, read_only = True)
     class Meta:
         model = AreaSolicitante
         fields = '__all__'

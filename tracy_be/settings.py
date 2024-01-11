@@ -172,4 +172,4 @@ SIMPLE_JWT = {
     
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://194.163.172.100:1337"]

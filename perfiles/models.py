@@ -2,6 +2,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+from tracy_be.tracybe_app.models import AreaSolicitante, Puesto
+
 class MiPerfilManager(BaseUserManager):
     def create_user(self, nombre, paterno, materno, username, email, password=None):
         if not email:
@@ -47,6 +49,10 @@ class Perfil(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=50, unique=True)
     telefono = models.CharField(max_length=50)
+    
+    puesto = models.ForeignKey(Puesto, on_delete=models.CASCADE, blank=True, null=True, related_name="listapuestoperfil")
+    area =  models.ForeignKey(AreaSolicitante, on_delete=models.CASCADE, blank=True, null=True, related_name="listaareaperfil")
+    empresa_id =  models.CharField(max_length=50)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
