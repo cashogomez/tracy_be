@@ -15,8 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from upload.views import image_upload 
+from django.contrib import admin
+from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
+
+from tracy_be.upload.views import image_upload
 
 urlpatterns = [
     path("", image_upload, name="upload"),
@@ -25,3 +29,5 @@ urlpatterns = [
     path('cuenta/', include('perfiles.api.urls')),
     #path('api-auth', include('rest_framework.urls')),
 ]
+if bool(settings.DEBUG):
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
