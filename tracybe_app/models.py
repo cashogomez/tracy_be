@@ -9,12 +9,6 @@ import datetime
 # el tipo puede ser interna o externa
 # el nombre puede ser quirofano, urgencia etc y la externa dese ser el nombre del proveedor
 
-class Puesto(models.Model):
-    tipo = models.CharField(max_length=50)
-    
-    def __str__(self):
-        return self.tipo
-    
 
     
 class AreaSolicitante(models.Model):

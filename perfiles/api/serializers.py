@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from perfiles.models import Perfil
-
-from tracybe_app.api.serializers import EventoLavadoSerializer, EventoSerializer
+from perfiles.models import AreaTrabajo, Perfil, Puesto
 
 class PerfilSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style = {'input_type': 'password'}, write_only = True)
@@ -35,3 +33,17 @@ class PerfilSerializer(serializers.ModelSerializer):
         perfil.set_password(password)
         perfil.save()
         return perfil
+    
+class PuestoSerializer(serializers.ModelSerializer):
+    listapuestoperfil = PerfilSerializer(many=True, read_only = True)
+    class Meta:
+        model = Puesto
+        fields = '__all__'
+        
+class AreaTrabajoSerializer(serializers.ModelSerializer):
+    listaareaperfil = PerfilSerializer(many=True, read_only = True)
+    class Meta:
+        model = AreaTrabajo
+        fields = '__all__'
+
+        
