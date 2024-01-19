@@ -20,7 +20,7 @@ RUN apt-get update && \
 RUN pip install --upgrade pip
 COPY . /usr/src/app/
 
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels imutils pandas scikit-learn Django pillow psycopg2 djangorestframework djangorestframework-simplejwt django-filter gunicorn
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels imutils pandas scikit-learn Django pillow psycopg2 djangorestframework djangorestframework-simplejwt django-filter gunicorn django-cors-headers
 
 
 #########
