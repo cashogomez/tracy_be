@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from perfiles.api.serializers import PerfilSerializer
 from rest_framework.authtoken.models import Token
@@ -6,6 +6,34 @@ from rest_framework import status
 #from perfiles import models
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib import auth
+from rest_framework.permissions import IsAuthenticated
+
+from tracy_be.perfiles.models import Perfil
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def session_view(request):
+    if request.method == 'GET':
+        user = request.user
+        cuenta = Perfil.objects.get(email=user)
+        data = {}
+        if cuenta is not None:
+            data['response'] = 'El usuario esta en sesión'
+            data['username'] = cuenta.username
+            data['email'] = cuenta.email
+            data['nombre'] = cuenta.nombre
+            data['paterno'] = cuenta.paterno
+            data['materno'] = cuenta.materno
+            data['telefono'] = cuenta.telefono
+            refresh = RefreshToken.for_user(cuenta)
+            data['token'] = {
+                'refresh' : str(refresh),
+                'access': str(refresh.access_token)
+            }
+            return Response(data)
+        else:
+            data['error'] = 'El usuario no existe'
+            return Response(data, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def logout_view(request):

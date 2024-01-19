@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'upload',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'tracy_be.urls'
@@ -163,7 +165,7 @@ REST_FRAMEWORK = {
 
 }
 
-
+CORS_ORIGIN_ALLOW_ALL = True
 
 SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
