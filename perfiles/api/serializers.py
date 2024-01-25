@@ -7,7 +7,7 @@ class PerfilSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Perfil
-        fields = ['username', 'email', 'password', 'password2', 'nombre', 'paterno', 'materno','telefono']
+        fields = ['username', 'email', 'password', 'password2', 'nombre', 'paterno', 'materno','telefono', 'foto']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -27,6 +27,8 @@ class PerfilSerializer(serializers.ModelSerializer):
             materno = self.validated_data['materno'],
             email = self.validated_data['email'],
             username = self.validated_data['username'],
+            foto = self.validated_data['foto'],
+            
             password = self.validated_data['password'],
         )
         perfil.telefono = self.validated_data['telefono']

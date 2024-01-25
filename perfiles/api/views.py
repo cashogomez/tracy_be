@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib import auth
 from rest_framework.permissions import IsAuthenticated
 
-from tracy_be.perfiles.models import Perfil
+from perfiles.models import Perfil
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
@@ -25,6 +25,7 @@ def session_view(request):
             data['paterno'] = cuenta.paterno
             data['materno'] = cuenta.materno
             data['telefono'] = cuenta.telefono
+            data['foto'] = cuenta.foto
             refresh = RefreshToken.for_user(cuenta)
             data['token'] = {
                 'refresh' : str(refresh),
@@ -58,6 +59,7 @@ def perfil_view(request):
             data['paterno'] = cuenta.paterno
             data['materno'] = cuenta.materno
             data['telefono'] = cuenta.telefono
+            data['foto'] = cuenta.foto
             #token = Token.objects.get(user=cuenta).key
             #data['token']= token
             refresh = RefreshToken.for_user(cuenta)
@@ -86,6 +88,7 @@ def login_view(request):
             data['paterno'] = perfil.paterno
             data['materno'] = perfil.materno
             data['telefono'] = perfil.telefono
+            data['foto'] = perfil.foto
             refresh = RefreshToken.for_user(perfil)
             data['token'] = {
                 'refresh': str(refresh),

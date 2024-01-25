@@ -18,7 +18,7 @@ class AreaTrabajo(models.Model):
    
 
 class MiPerfilManager(BaseUserManager):
-    def create_user(self, nombre, paterno, materno, username, email, password=None):
+    def create_user(self, nombre, paterno, materno, username, email, foto, password=None):
         if not email:
             raise ValueError('El usuario debe tener un email')
         
@@ -31,13 +31,14 @@ class MiPerfilManager(BaseUserManager):
             nombre = nombre,
             paterno = paterno,
             materno = materno,
+            foto = foto,
         )
         
         user.set_password(password)
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, nombre, paterno, materno, username, email, password=None):
+    def create_superuser(self, nombre, paterno, materno, username, email, foto, password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
@@ -45,6 +46,7 @@ class MiPerfilManager(BaseUserManager):
             nombre = nombre,
             paterno = paterno,
             materno = materno,
+            foto = foto,
         )
         
         user.is_admin = True
@@ -62,6 +64,7 @@ class Perfil(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=50, unique=True)
     telefono = models.CharField(max_length=50)
+    foto = models.CharField(max_length=500, null=True, blank=True, default='')
     
     puesto = models.ForeignKey(Puesto, on_delete=models.CASCADE, blank=True, null=True, related_name="listapuestoperfil")
     area =  models.ForeignKey(AreaTrabajo, on_delete=models.CASCADE, blank=True, null=True, related_name="listaareaperfil")

@@ -28,15 +28,15 @@ MEDIA_DIR = os.path.join(BASE_DIR,'media')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-q!c=_hnzpxq&&chv3-c4dp9eu!cv92cgoy1p1@@=d0qwgj^xtl'
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = 'django-insecure-q!c=_hnzpxq&&chv3-c4dp9eu!cv92cgoy1p1@@=d0qwgj^xtl'
+#SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = bool(os.environ.get("DEBUG", default=1))
 
-#ALLOWED_HOSTS = ["localhost 127.0.0.1 194.163.172.100 [::1]"]
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "[::1"]
+#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'es-MX'
+LANGUAGE_CODE = 'es-mx'
 
 TIME_ZONE = 'America/Mexico_City'
 
@@ -174,4 +174,4 @@ SIMPLE_JWT = {
     
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://194.163.172.100:1337"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://194.163.172.100"]
