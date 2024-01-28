@@ -174,4 +174,4 @@ SIMPLE_JWT = {
     
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://194.163.172.100"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://194.163.172.100", "http://127.0.0.1:5200"]

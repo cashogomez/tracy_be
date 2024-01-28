@@ -37,9 +37,15 @@ def session_view(request):
             return Response(data, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
+
 def logout_view(request):
+    print('*************************************')
+    print(request.headers)
+    print('********************************')
+    print(request.data)
+    print('++++++++++++++++++++++++++++++++')
     if request.method == 'POST':
-        request.user.auth_token.delete()
+        print(request.user)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -77,6 +83,7 @@ def login_view(request):
     data = {}
     if request.method=='POST':
         email = request.data.get('email')
+        print(email)
         password = request.data.get('password')
         
         perfil = auth.authenticate(email=email, password=password)
