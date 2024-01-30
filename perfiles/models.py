@@ -18,7 +18,7 @@ class AreaTrabajo(models.Model):
    
 
 class MiPerfilManager(BaseUserManager):
-    def create_user(self, nombre, paterno, materno, username, email, foto, password=None):
+    def create_user(self, nombre, paterno, materno, username, email, foto,  puesto, area, empresa_id, is_admin, numeroEmpleado, is_active, is_staff, is_superadmin,  password=None):
         if not email:
             raise ValueError('El usuario debe tener un email')
         
@@ -32,13 +32,21 @@ class MiPerfilManager(BaseUserManager):
             paterno = paterno,
             materno = materno,
             foto = foto,
+            puesto = puesto,
+            area = area,
+            empresa_id = empresa_id,
+            numeroEmpleado = numeroEmpleado,
+            is_admin = is_admin,
+            is_active = is_active,
+            is_staff = is_staff,
+            is_superadmin = is_superadmin
         )
         
         user.set_password(password)
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, nombre, paterno, materno, username, email, foto, password=None):
+    def create_superuser(self, nombre, paterno, materno, username, email, foto, puesto, area, empresa_id, numeroEmpleado, password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
@@ -47,6 +55,10 @@ class MiPerfilManager(BaseUserManager):
             paterno = paterno,
             materno = materno,
             foto = foto,
+            puesto = puesto,
+            area = area,
+            empresa_id = empresa_id,
+            numeroEmpleado = numeroEmpleado
         )
         
         user.is_admin = True
@@ -69,6 +81,7 @@ class Perfil(AbstractBaseUser):
     puesto = models.ForeignKey(Puesto, on_delete=models.CASCADE, blank=True, null=True, related_name="listapuestoperfil")
     area =  models.ForeignKey(AreaTrabajo, on_delete=models.CASCADE, blank=True, null=True, related_name="listaareaperfil")
     empresa_id =  models.CharField(max_length=50)
+    numeroEmpleado = models.CharField(max_length=50)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)

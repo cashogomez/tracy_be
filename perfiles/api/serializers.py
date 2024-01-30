@@ -28,6 +28,7 @@ class PerfilSerializer(serializers.ModelSerializer):
             email = self.validated_data['email'],
             username = self.validated_data['username'],
             foto = self.validated_data['foto'],
+            numeroEmpleado = self.validated_data['numeroEmpleado'],
             
             password = self.validated_data['password'],
         )

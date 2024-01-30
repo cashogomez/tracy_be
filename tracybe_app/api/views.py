@@ -407,3 +407,4 @@ class ListaEventoLavado(generics.ListCreateAPIView):
 class DetalleEventoLavado(generics.RetrieveUpdateDestroyAPIView):
     queryset = EventoLavado.objects.all()
     serializer_class = EventoLavadoSerializer
+
