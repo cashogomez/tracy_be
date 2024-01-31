@@ -31,7 +31,7 @@ def session_view(request):
             data['puesto'] = cuenta.puesto
             data['area'] = cuenta.area
             data['empresa_id'] = cuenta.empresa_id
-            data['numeroEmpleado'] = cuenta.numero_empleado
+            data['numeroEmpleado'] = cuenta.numeroEmpleado
             data['is_admin'] = cuenta.is_admin
             data['is_staff'] = cuenta.is_staff
             data['is_active'] = cuenta.is_active
@@ -78,7 +78,7 @@ def perfil_view(request):
             data['puesto'] = cuenta.puesto
             data['area'] = cuenta.area
             data['empresa_id'] = cuenta.empresa_id
-            data['numeroEmpleado'] = cuenta.numero_empleado
+            data['numeroEmpleado'] = cuenta.numeroEmpleado
             data['is_admin'] = cuenta.is_admin
             data['is_staff'] = cuenta.is_staff
             data['is_active'] = cuenta.is_active
@@ -116,7 +116,7 @@ def login_view(request):
             data['puesto'] = perfil.puesto
             data['area'] = perfil.area
             data['empresa_id'] = perfil.empresa_id
-            data['numeroEmpleado'] = perfil.numero_empleado
+            data['numeroEmpleado'] = perfil.numeroEmpleado
             data['is_admin'] = perfil.is_admin
             data['is_staff'] = perfil.is_staff
             data['is_active'] = perfil.is_active
