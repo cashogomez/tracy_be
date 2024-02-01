@@ -18,7 +18,7 @@ class AreaTrabajo(models.Model):
    
 
 class MiPerfilManager(BaseUserManager):
-    def create_user(self, nombre, paterno, materno, username, email, foto,  puesto, area, empresa_id, is_admin, numeroEmpleado, is_active, is_staff, is_superadmin,  password=None):
+    def create_user(self, nombre, paterno, materno, username, email, foto,  puesto, area, empresa_id, numeroEmpleado, is_active, is_staff, is_admin, is_superadmin,  password=None):
         if not email:
             raise ValueError('El usuario debe tener un email')
         
@@ -46,7 +46,7 @@ class MiPerfilManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, nombre, paterno, materno, username, email, foto, puesto, area, empresa_id, numeroEmpleado, password=None):
+    def create_superuser(self, nombre, paterno, materno, username, email, foto, puesto, area, empresa_id, numeroEmpleado,  password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,

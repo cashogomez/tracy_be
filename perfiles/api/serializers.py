@@ -7,7 +7,7 @@ class PerfilSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Perfil
-        fields = ['username', 'email', 'password', 'password2', 'nombre', 'paterno', 'materno','telefono', 'foto']
+        fields = ['username', 'email', 'password', 'password2', 'nombre', 'paterno', 'materno','telefono', 'foto', 'numeroEmpleado', 'is_active', 'is_staff', 'is_admin', 'is_superadmin']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -33,18 +33,22 @@ class PerfilSerializer(serializers.ModelSerializer):
             password = self.validated_data['password'],
         )
         perfil.telefono = self.validated_data['telefono']
+        perfil.is_active = self.validated_data['is_active']
+        perfil.is_staff = self.validated_data['is_staff']
+        perfil.is_admin = self.validated_data['is_admin']
+        perfil.is_is_superadmin = self.validated_data['is_superadmin']
         perfil.set_password(password)
         perfil.save()
         return perfil
     
 class PuestoSerializer(serializers.ModelSerializer):
-    listapuestoperfil = PerfilSerializer(many=True, read_only = True)
+    listapuestoperfil = PerfilSerializer(many=True, read_only = True, source = 'Perfil.id')
     class Meta:
         model = Puesto
         fields = '__all__'
         
 class AreaTrabajoSerializer(serializers.ModelSerializer):
-    listaareaperfil = PerfilSerializer(many=True, read_only = True)
+    listaareaperfil = PerfilSerializer(many=True, read_only = True, source = 'Perfil.id')
     class Meta:
         model = AreaTrabajo
         fields = '__all__'
