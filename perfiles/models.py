@@ -18,7 +18,7 @@ class AreaTrabajo(models.Model):
    
 
 class MiPerfilManager(BaseUserManager):
-    def create_user(self, nombre, paterno, materno, username, email, foto,  puesto, area, empresa_id, numeroEmpleado, is_active, is_staff, is_admin, is_superadmin,  password=None):
+    def create_user(self, nombre, paterno, materno, username, email, foto,  puesto, area, telefono, empresa_id, numeroEmpleado, is_active, is_staff, is_admin, is_superadmin,  password=None):
         if not email:
             raise ValueError('El usuario debe tener un email')
         
@@ -36,6 +36,7 @@ class MiPerfilManager(BaseUserManager):
             area = area,
             empresa_id = empresa_id,
             numeroEmpleado = numeroEmpleado,
+            telefono = telefono,
             is_admin = is_admin,
             is_active = is_active,
             is_staff = is_staff,
@@ -46,7 +47,7 @@ class MiPerfilManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, nombre, paterno, materno, username, email, foto, puesto, area, empresa_id, numeroEmpleado,  password=None):
+    def create_superuser(self, nombre, paterno, materno, username, email, foto, telefono, puesto, area, empresa_id, numeroEmpleado,  password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
@@ -57,6 +58,7 @@ class MiPerfilManager(BaseUserManager):
             foto = foto,
             puesto = puesto,
             area = area,
+            telefono = telefono,
             empresa_id = empresa_id,
             numeroEmpleado = numeroEmpleado
         )
@@ -76,7 +78,7 @@ class Perfil(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=50, unique=True)
     telefono = models.CharField(max_length=50)
-    foto = models.CharField(max_length=500, null=True, blank=True, default='')
+    foto = models.CharField(max_length=500, default='')
     
     puesto = models.ForeignKey(Puesto, on_delete=models.CASCADE, blank=True, null=True, related_name="listapuestoperfil")
     area =  models.ForeignKey(AreaTrabajo, on_delete=models.CASCADE, blank=True, null=True, related_name="listaareaperfil")

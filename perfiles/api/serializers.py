@@ -7,7 +7,24 @@ class PerfilSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Perfil
-        fields = ['username', 'email', 'password', 'password2', 'nombre', 'paterno', 'materno','telefono', 'foto', 'numeroEmpleado', 'is_active', 'is_staff', 'is_admin', 'is_superadmin']
+        #fields = '__all__'
+        fields = ['username', 
+                  'email', 
+                  'password', 
+                  'password2', 
+                  'nombre', 
+                  'paterno', 
+                  'materno', 
+                  'puesto', 
+                  'area',
+                  'telefono', 
+                  'foto', 
+                  'numeroEmpleado', 
+                  'empresa_id',
+                  'is_active', 
+                  'is_staff', 
+                  'is_admin', 
+                  'is_superadmin']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -27,28 +44,36 @@ class PerfilSerializer(serializers.ModelSerializer):
             materno = self.validated_data['materno'],
             email = self.validated_data['email'],
             username = self.validated_data['username'],
-            foto = self.validated_data['foto'],
+            
             numeroEmpleado = self.validated_data['numeroEmpleado'],
+            foto = self.validated_data['foto'],
+            puesto = self.validated_data['puesto'],
+            area = self.validated_data['area'],
+            
+            empresa_id = self.validated_data['empresa_id'],
+            telefono = self.validated_data['telefono'],
+            
+            is_active = self.validated_data['is_active'],
+            is_staff = self.validated_data['is_staff'],
+            is_admin = self.validated_data['is_admin'],
+            is_superadmin = self.validated_data['is_superadmin'],
             
             password = self.validated_data['password'],
+            
         )
-        perfil.telefono = self.validated_data['telefono']
-        perfil.is_active = self.validated_data['is_active']
-        perfil.is_staff = self.validated_data['is_staff']
-        perfil.is_admin = self.validated_data['is_admin']
-        perfil.is_is_superadmin = self.validated_data['is_superadmin']
+
         perfil.set_password(password)
         perfil.save()
         return perfil
     
 class PuestoSerializer(serializers.ModelSerializer):
-    listapuestoperfil = PerfilSerializer(many=True, read_only = True, source = 'Perfil.id')
+    listapuestoperfil = PerfilSerializer(many=True, read_only = True)
     class Meta:
         model = Puesto
         fields = '__all__'
         
 class AreaTrabajoSerializer(serializers.ModelSerializer):
-    listaareaperfil = PerfilSerializer(many=True, read_only = True, source = 'Perfil.id')
+    listaareaperfil = PerfilSerializer(many=True, read_only = True)
     class Meta:
         model = AreaTrabajo
         fields = '__all__'

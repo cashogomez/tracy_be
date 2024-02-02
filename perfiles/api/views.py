@@ -62,11 +62,18 @@ def logout_view(request):
 @api_view(['POST'])
 def perfil_view(request):
     if request.method == 'POST':
+        print('11111111111111111111111111111111111')
+        print(request.data)
+        print('11111111111111111111111111111111')
         serializer = PerfilSerializer(data=request.data)
         data = {}
+
         
         if serializer.is_valid():
             cuenta = serializer.save()
+            print('********************************')
+            print(cuenta.puesto.id)
+            print('++++++++++++++++++++++++++++++++')
             data['response'] = 'El registro del usuario fue exitoso'
             data['username'] = cuenta.username
             data['email'] = cuenta.email
@@ -75,23 +82,24 @@ def perfil_view(request):
             data['materno'] = cuenta.materno
             data['telefono'] = cuenta.telefono
             data['foto'] = cuenta.foto
-            data['puesto'] = cuenta.puesto
-            data['area'] = cuenta.area
+            data['puesto'] = cuenta.puesto.id
+            data['area'] = cuenta.area.id
             data['empresa_id'] = cuenta.empresa_id
             data['numeroEmpleado'] = cuenta.numeroEmpleado
             data['is_admin'] = cuenta.is_admin
             data['is_staff'] = cuenta.is_staff
             data['is_active'] = cuenta.is_active
             data['is_superadmin'] = cuenta.is_superadmin
-            #token = Token.objects.get(user=cuenta).key
-            #data['token']= token
             refresh = RefreshToken.for_user(cuenta)
             data['token'] = {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
             }
         else:
+            print('$$$$$$$$$$$$$$$$$$$$$')
             data = serializer.errors
+            print(data)
+            return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
         return Response(data)
     
@@ -109,6 +117,7 @@ def login_view(request):
             data['response'] = 'El login fue exitoso'
             data['username'] = perfil.username
             data['email'] = perfil.email
+            data['nombre'] = perfil.nombre
             data['paterno'] = perfil.paterno
             data['materno'] = perfil.materno
             data['telefono'] = perfil.telefono
