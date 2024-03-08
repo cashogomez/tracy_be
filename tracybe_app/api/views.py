@@ -295,12 +295,14 @@ class DetalleSetAV(APIView):
 # ******************************* INSTRUMENTO ******************************
 
 class InstrumentoAV(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         instrumentos = Instrumento.objects.all()
         serializer = InstrumentoSerializer(instrumentos, many = True)
         return Response(serializer.data)
     
     def post(self, request):
+
         serializer = InstrumentoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -333,7 +335,10 @@ class DetalleInstrumentoAV(APIView):
         
     def delete(self, request, pk):
         try:
+            print(pk)
+            
             instrumento = Instrumento.objects.get(pk=pk)
+            print(instrumento)
         except Instrumento.DoesNotExist:
             return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         instrumento.delete()

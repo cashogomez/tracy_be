@@ -15,6 +15,7 @@ urlpatterns = [
     
     path('instrumento/', InstrumentoAV.as_view(), name='lista_instrumento'),
     path('instrumento/<int:pk>', DetalleInstrumentoAV.as_view(), name='instrumento-detail'),
+    
     path('set/', SetAV.as_view(), name='lista_set'),
     path('set/<int:pk>', DetalleSetAV.as_view(), name='set-detail'),
     path('empaque/', EmpaqueAV.as_view(), name='lista_empaque'),

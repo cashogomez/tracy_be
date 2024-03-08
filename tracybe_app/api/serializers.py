@@ -32,7 +32,6 @@ class EventoLavadoSerializer(serializers.ModelSerializer):
 
 
 class InstrumentoSerializer(serializers.ModelSerializer):
-    
     longitud_codigo_qr = serializers.SerializerMethodField()
     listainstrumentoeventolavado = EventoLavadoSerializer(many=True, read_only = True)
     

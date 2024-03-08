@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
 from perfiles.models import Perfil
 import datetime 
@@ -115,9 +116,16 @@ class Equipo(models.Model):
     
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=250)
+    cantidad  = models.IntegerField( null=True, blank=True, default=0)
+    familia = models.CharField(max_length=250, null=True, blank=True, default='')
+    individuo = models.IntegerField( null=True, blank=True, default=0)
     tipo = models.CharField(max_length=250, null=True, blank=True, default='')
     marca = models.CharField(max_length=250, null=True, blank=True, default='')
+    lote =  models.CharField(max_length=250, null=True, blank=True, default='')
+    caducidad = models.IntegerField( null=True, blank=True, default=0)
+    foto = models.URLField(max_length=250, null=True, blank=True, default='')
     descripcion = models.CharField(max_length=500, null=True, blank=True, default='')
+    uso = models.IntegerField( null=True, blank=True, default=0)
     codigo_qr = models.CharField(max_length=250, null=True, blank=True, default='')
     prelavado = models.BooleanField(default=False)
     completo = models.BooleanField(default=True)
@@ -129,6 +137,7 @@ class Instrumento(models.Model):
     
     def __str__(self):
         return self.nombre + ' ' + self.tipo+' '+self.marca + ' ' + self.descripcion
+    
     
 class EventoLavado(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, blank=True, null=True, related_name="listaperfileventolavado")
