@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
 from tracybe_app.models import (Instrumento,  Set, Empaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
-                                EventoLavado, Ciclo)
+                                EventoLavado, Ciclo, cantidadInstrumentos)
 
 
 class EventoSerializer(serializers.ModelSerializer):
@@ -60,17 +60,25 @@ class InstrumentoSerializer(serializers.ModelSerializer):
         else:
             return data
         
-        
+class  cantidadInstrumentosSerializer(serializers.ModelSerializer): 
+    class Meta:
+        model = cantidadInstrumentos
+        fields = "__all__"   
+
+class cantidadSetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = cantidadInstrumentos
+        fields = "__all__"     
 
 class SetSerializer(serializers.ModelSerializer):
-    #listainstrumento = InstrumentoSerializer(many=True, read_only = True)
+    listasetcantidadinstrumento = cantidadInstrumentosSerializer(many=True, read_only = True)
     #listainstrumento = serializers.StringRelatedField(many=True)
     #listainstrumento = serializers.PrimaryKeyRelatedField(many=True, read_only = True)
-    listainstrumento = serializers.HyperlinkedRelatedField (
-        many=True, 
-        read_only = True,
-        view_name="instrumento-detail"
-        )
+    #listainstrumento = serializers.HyperlinkedRelatedField (
+    #    many=True, 
+    #    read_only = True,
+    #    view_name="instrumento-detail"
+    #    )
     
     class Meta:
         model = Set
@@ -78,8 +86,8 @@ class SetSerializer(serializers.ModelSerializer):
 
 class EmpaqueSerializer(serializers.ModelSerializer):
     semaforo = serializers.SerializerMethodField()
-    listaempaqueset = SetSerializer(many=True, read_only = True)
-    listaempaqueinstrumento = InstrumentoSerializer(many = True, read_only = True)
+    listaempaquecantidadset = cantidadSetSerializer(many=True, read_only = True)
+    listaempaquecantidadinstrumento = cantidadInstrumentosSerializer(many = True, read_only = True)
     listaempaqueevento = EventoSerializer(many = True, read_only = True)
     
     

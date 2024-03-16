@@ -53,9 +53,10 @@ class  Empaque(models.Model):
 
 class Set(models.Model):
     numero = models.PositiveIntegerField(null=True, default=0)
+    maximo = models.PositiveIntegerField(null=True, default=0)
+    minimo = models.PositiveIntegerField(null=True, default=0)
     nombre = models.CharField(max_length=250)
     foto = models.URLField(max_length=250, null=True, blank=True, default='')
-    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True, related_name="listaempaqueset")
     activo = models.BooleanField(default=False)
     
     def __str__(self):
@@ -122,7 +123,6 @@ class Instrumento(models.Model):
     tipo = models.CharField(max_length=250, null=True, blank=True, default='')
     marca = models.CharField(max_length=250, null=True, blank=True, default='')
     lote =  models.CharField(max_length=250, null=True, blank=True, default='')
-    caducidad = models.IntegerField( null=True, blank=True, default=0)
     foto = models.URLField(max_length=250, null=True, blank=True, default='')
     descripcion = models.CharField(max_length=500, null=True, blank=True, default='')
     uso = models.IntegerField( null=True, blank=True, default=0)
@@ -130,15 +130,37 @@ class Instrumento(models.Model):
     prelavado = models.BooleanField(default=False)
     completo = models.BooleanField(default=True)
     funcional = models.BooleanField(default=True)
-    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True, related_name="listainstrumento")
-    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True, related_name="listaempaqueinstrumento")
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True) 
     
     def __str__(self):
         return self.nombre + ' ' + self.tipo+' '+self.marca + ' ' + self.descripcion
-    
-    
+
+class cantidadInstrumentos(models.Model):
+    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True, related_name="listasetcantidadinstrumento")
+    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True, related_name="listaempaquecantidadinstrumento")
+    instrumento = models.OneToOneField(
+        Instrumento,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    cantidad = models.IntegerField(null=True, blank=True, default=0)
+
+    def __str__(self):
+        return 'son '+self.cantidad + ' '+self.instrumento.nombre
+
+class cantidadSet(models.Model):
+    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True, related_name="listaempaquecantidadset")
+    set = models.OneToOneField(
+        Set,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    cantidad = models.IntegerField(null=True, blank=True, default=0)
+
+    def __str__(self):
+        return 'son '+self.cantidad + ' '+self.set.nombre
+
 class EventoLavado(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, blank=True, null=True, related_name="listaperfileventolavado")
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, blank=True, null=True, related_name="listaequipoeventolavado")
