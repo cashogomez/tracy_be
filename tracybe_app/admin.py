@@ -1,6 +1,6 @@
 from django.contrib import admin
 from tracybe_app.models import (Instrumento, Set, Empaque, Turno, Etapa, Evento, AreaSolicitante, 
-                                Equipo, EventoLavado, Ciclo, TipoEquipo, Estatus, Paciente, Ticket)
+                                Equipo, EventoLavado, Ciclo, TipoEquipo, Estatus, Paciente, Ticket, cantidadInstrumentos, cantidadSet)
 # Register your models here.
 admin.site.register(AreaSolicitante)
 admin.site.register(Turno)
@@ -16,4 +16,6 @@ admin.site.register(Instrumento)
 admin.site.register(EventoLavado)
 admin.site.register(Paciente)
 admin.site.register(Ticket)
+admin.site.register(cantidadInstrumentos)
+admin.site.register(cantidadSet)
 
