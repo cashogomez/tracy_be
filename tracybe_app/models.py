@@ -59,6 +59,8 @@ class Set(models.Model):
     foto = models.URLField(max_length=250, null=True, blank=True, default='')
     activo = models.BooleanField(default=False)
     
+    empaques = models.ManyToManyField(Empaque, through="SetEmpaque")
+    
     def __str__(self):
         return self.nombre
 
@@ -133,33 +135,29 @@ class Instrumento(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True) 
     
+    sets = models.ManyToManyField(Set, through="InstrumentoSet")
+    empaques = models.ManyToManyField(Empaque, through="InstrumentoEmpaque")
+    
     def __str__(self):
         return self.nombre + ' ' + self.tipo+' '+self.marca + ' ' + self.descripcion
 
-class cantidadInstrumentos(models.Model):
-    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True, related_name="listasetcantidadinstrumento")
-    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True, related_name="listaempaquecantidadinstrumento")
-    instrumento = models.OneToOneField(
-        Instrumento,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
-    cantidad = models.IntegerField(null=True, blank=True, default=0)
 
-    def __str__(self):
-        return 'son '+self.cantidad + ' '+self.instrumento.nombre
+# ***************** Multi a Multi *********************
+class InstrumentoSet(models.Model):
+    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
+    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
+    
+class InstrumentoEmpaque(models.Model):
+    empaque =  models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True)
+    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
 
-class cantidadSet(models.Model):
-    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True, related_name="listaempaquecantidadset")
-    set = models.OneToOneField(
-        Set,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
-    cantidad = models.IntegerField(null=True, blank=True, default=0)
-
-    def __str__(self):
-        return 'son '+self.cantidad + ' '+self.set.nombre
+class SetEmpaque(models.Model):
+    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
+    empaque =  models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
+# ******************************************************
 
 class EventoLavado(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, blank=True, null=True, related_name="listaperfileventolavado")

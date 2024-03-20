@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Instrumento, Set, Empaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento, cantidadInstrumentos, cantidadSet
+from tracybe_app.models import Instrumento, InstrumentoEmpaque, InstrumentoSet, Set, Empaque, SetEmpaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import InstrumentoSerializer, SetSerializer, EmpaqueSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer, cantidadInstrumentosSerializer, cantidadSetSerializer
+from tracybe_app.api.serializers import InstrumentoEmpaqueSerializer, InstrumentoSerializer, InstrumentoSetSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -292,6 +292,11 @@ class DetalleSetAV(APIView):
         set.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)        
 
+class SetEmpaqueViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = SetEmpaque.objects.all()
+    serializer_class = SetEmpaqueSerializer  
+
 # ******************************* INSTRUMENTO ******************************
 
 class InstrumentoAV(APIView):
@@ -344,109 +349,15 @@ class DetalleInstrumentoAV(APIView):
         instrumento.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-# ******************************* CANTIDAD INSTRUMENTO ******************
-
-class cantidadInstrumentoAV(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        cantidadinstrumentos = cantidadInstrumentos.objects.all()
-        serializer = cantidadInstrumentosSerializer(cantidadinstrumentos, many = True)
-        return Response(serializer.data)
+class InstrumentoSetViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = InstrumentoSet.objects.all()
+    serializer_class = InstrumentoSetSerializer
     
-    def post(self, request):
-
-        serializer = cantidadInstrumentosSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-
-class DetalleCantidadInstrumentoAV(APIView):
-    
-    def get(self, request, pk):
-        try:
-            instrumento = cantidadInstrumentos.objects.get(pk=pk) 
-        except cantidadInstrumentos.DoesNotExist:
-            return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = cantidadInstrumentosSerializer(instrumento)
-        return Response(serializer.data)
-    
-    def put(self, request, pk):
-        try:
-            instrumento = cantidadInstrumentos.objects.get(pk=pk) 
-        except cantidadInstrumentos.DoesNotExist:
-            return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)     
-
-        serializer = cantidadInstrumentosSerializer(instrumento, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def delete(self, request, pk):
-        try:
-            print(pk)
-            
-            instrumento = cantidadInstrumentos.objects.get(pk=pk)
-            print(instrumento)
-        except cantidadInstrumentos.DoesNotExist:
-            return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        instrumento.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
-# ******************************* CANTIDAD SET ******************
-
-class cantidadSetAV(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        cantidadsets = cantidadSet.objects.all()
-        serializer = cantidadSetSerializer(cantidadsets, many = True)
-        return Response(serializer.data)
-    
-    def post(self, request):
-
-        serializer = cantidadSetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-
-class DetalleCantidadSetAV(APIView):
-    
-    def get(self, request, pk):
-        try:
-            instrumento = cantidadSet.objects.get(pk=pk) 
-        except cantidadSet.DoesNotExist:
-            return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = cantidadSetSerializer(instrumento)
-        return Response(serializer.data)
-    
-    def put(self, request, pk):
-        try:
-            instrumento = cantidadSet.objects.get(pk=pk) 
-        except cantidadSet.DoesNotExist:
-            return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)     
-
-        serializer = cantidadSetSerializer(instrumento, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def delete(self, request, pk):
-        try:
-            print(pk)
-            
-            instrumento = cantidadSet.objects.get(pk=pk)
-            print(instrumento)
-        except cantidadSet.DoesNotExist:
-            return Response({'error': 'Instrumento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        instrumento.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class InstrumentoEmpaqueViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = InstrumentoEmpaque.objects.all()
+    serializer_class = InstrumentoEmpaqueSerializer   
 # ******************************* Lavadora ******************************
 
 class EquipoAV(APIView):

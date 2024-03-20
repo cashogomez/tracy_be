@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #from tracybe_app.api.views import lista_instrumento, detalle_instrumento
-from tracybe_app.api.views import (CrearTipoEquipo, DetalleCantidadInstrumentoAV, DetalleCantidadSetAV, InstrumentoAV, DetalleInstrumentoAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV,
+from tracybe_app.api.views import (CrearTipoEquipo, InstrumentoAV, DetalleInstrumentoAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV,
                                     TurnoAV, DetalleTurnoAV, EtapaAV, DetalleEtapaAV, AreaSolicitanteAV, DetalleAreaSolicitanteAV, 
                                     EventoLavadoCreate, ListaEventoLavado, DetalleEventoLavado, EventoCreate, ListaEvento, DetalleEvento,
-                                    EquipoAV, DetalleEquipoAV, ListaTipoEquipo, DetalleTipoEquipo, cantidadInstrumentoAV, cantidadSetAV)
+                                    EquipoAV, DetalleEquipoAV, ListaTipoEquipo, DetalleTipoEquipo)
 
 
 
@@ -16,12 +16,6 @@ urlpatterns = [
     path('instrumento/', InstrumentoAV.as_view(), name='lista_instrumento'),
     path('instrumento/<int:pk>', DetalleInstrumentoAV.as_view(), name='instrumento-detail'),
     
-    path('cantidadinstrumento/', cantidadInstrumentoAV.as_view(), name='lista_cantidadinstrumento'),
-    path('cantidadinstrumento/<int:pk>', DetalleCantidadInstrumentoAV.as_view(), name='cantidadinstrumento-detail'),
-    
-    path('cantidadset/', cantidadSetAV.as_view(), name='lista_cantidadset'),
-    path('cantidadset/<int:pk>', DetalleCantidadSetAV.as_view(), name='cantidadset-detail'),
-       
     path('set/', SetAV.as_view(), name='lista_set'),
     path('set/<int:pk>', DetalleSetAV.as_view(), name='set-detail'),
     

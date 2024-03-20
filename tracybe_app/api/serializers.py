@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento,  Set, Empaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
-                                EventoLavado, Ciclo, cantidadInstrumentos)
+from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet,  Set, Empaque, SetEmpaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+                                EventoLavado, Ciclo)
 
 
 class EventoSerializer(serializers.ModelSerializer):
@@ -40,6 +40,7 @@ class InstrumentoSerializer(serializers.ModelSerializer):
         fields = '__all__'
         #fields = ['id', 'nombre', 'tipo']
         #exclude = ['id']
+        extra_kwargs = {'sets': {'required': False}, 'empaques': {'required': False}}
     
     def get_longitud_codigo_qr(self, object):
         if object.codigo_qr is None:
@@ -60,18 +61,8 @@ class InstrumentoSerializer(serializers.ModelSerializer):
         else:
             return data
         
-class  cantidadInstrumentosSerializer(serializers.ModelSerializer): 
-    class Meta:
-        model = cantidadInstrumentos
-        fields = "__all__"   
-
-class cantidadSetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = cantidadInstrumentos
-        fields = "__all__"     
 
 class SetSerializer(serializers.ModelSerializer):
-    listasetcantidadinstrumento = cantidadInstrumentosSerializer(many=True, read_only = True)
     #listainstrumento = serializers.StringRelatedField(many=True)
     #listainstrumento = serializers.PrimaryKeyRelatedField(many=True, read_only = True)
     #listainstrumento = serializers.HyperlinkedRelatedField (
@@ -83,11 +74,10 @@ class SetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Set
         fields = "__all__"
+        extra_kwargs = {'empaques': {'required': False}}
 
 class EmpaqueSerializer(serializers.ModelSerializer):
     semaforo = serializers.SerializerMethodField()
-    listaempaquecantidadset = cantidadSetSerializer(many=True, read_only = True)
-    listaempaquecantidadinstrumento = cantidadInstrumentosSerializer(many = True, read_only = True)
     listaempaqueevento = EventoSerializer(many = True, read_only = True)
     
     
@@ -116,7 +106,80 @@ class EmpaqueSerializer(serializers.ModelSerializer):
         else:
             return 'E'
         
+# **************************** SERIALIZER Multy Multy ***************************
+class InstrumentoSetSerializer(serializers.ModelSerializer):
+    instrumento = InstrumentoSerializer()
+    set = SetSerializer()
 
+    class Meta:
+        model = InstrumentoSet
+        fields = "__all__"
+
+    def create(self, validated_data) -> InstrumentoSet:
+        # import ipdb;
+        # ipdb.set_trace()
+        # create key_date_case
+        instrumento_creado = Instrumento.objects.create(**validated_data.get('instrumento'))
+
+        # create icd10
+        set_creado = Set.objects.create(**validated_data.get('set'))
+
+        # create connection
+        conn = InstrumentoSet.objects.create(
+            instrumento=instrumento_creado, set=set_creado, is_primary=validated_data.get('is_primary'),
+            certainty=validated_data.get('certainty')
+        )
+        return conn
+
+class InstrumentoEmpaqueSerializer(serializers.ModelSerializer):
+    instrumento = InstrumentoSerializer()
+    empaque = EmpaqueSerializer()
+
+    class Meta:
+        model = InstrumentoEmpaque
+        fields = "__all__"
+
+    def create(self, validated_data) -> InstrumentoEmpaque:
+        # import ipdb;
+        # ipdb.set_trace()
+        # create key_date_case
+        instrumento_creado = Instrumento.objects.create(**validated_data.get('instrumento'))
+
+        # create icd10
+        empaque_creado = Empaque.objects.create(**validated_data.get('empaque'))
+
+        # create connection
+        conn = InstrumentoEmpaque.objects.create(
+            instrumento=instrumento_creado, empaque=empaque_creado, is_primary=validated_data.get('is_primary'),
+            certainty=validated_data.get('certainty')
+        )
+        return conn
+
+class SetEmpaqueSerializer(serializers.ModelSerializer):
+    set = SetSerializer()
+    empaque = EmpaqueSerializer()
+
+    class Meta:
+        model = SetEmpaque
+        fields = "__all__"
+
+    def create(self, validated_data) -> SetEmpaque:
+        # import ipdb;
+        # ipdb.set_trace()
+        # create key_date_case
+        set_creado = Set.objects.create(**validated_data.get('set'))
+
+        # create icd10
+        empaque_creado = Empaque.objects.create(**validated_data.get('empaque'))
+
+        # create connection
+        conn = SetEmpaque.objects.create(
+            set=set_creado, empaque=empaque_creado, is_primary=validated_data.get('is_primary'),
+            certainty=validated_data.get('certainty')
+        )
+        return conn
+
+#*******************************************************************
 class EquipoSerializer(serializers.ModelSerializer):
     listaequipoeventolavado = EventoLavadoSerializer(many = True, read_only = True)
     class Meta:
