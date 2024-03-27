@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet,  Set, Empaque, SetEmpaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet,  Set, Empaque, SetEmpaque, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -116,19 +116,9 @@ class InstrumentoSetSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data) -> InstrumentoSet:
-        # import ipdb;
-        # ipdb.set_trace()
-        # create key_date_case
-        instrumento_creado = Instrumento.objects.create(**validated_data.get('instrumento'))
-
-        # create icd10
-        set_creado = Set.objects.create(**validated_data.get('set'))
 
         # create connection
-        conn = InstrumentoSet.objects.create(
-            instrumento=instrumento_creado, set=set_creado, is_primary=validated_data.get('is_primary'),
-            certainty=validated_data.get('certainty')
-        )
+        conn = InstrumentoSet.objects.create(**validated_data)
         return conn
 
 class InstrumentoEmpaqueSerializer(serializers.ModelSerializer):
@@ -140,19 +130,9 @@ class InstrumentoEmpaqueSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data) -> InstrumentoEmpaque:
-        # import ipdb;
-        # ipdb.set_trace()
-        # create key_date_case
-        instrumento_creado = Instrumento.objects.create(**validated_data.get('instrumento'))
-
-        # create icd10
-        empaque_creado = Empaque.objects.create(**validated_data.get('empaque'))
-
+        
         # create connection
-        conn = InstrumentoEmpaque.objects.create(
-            instrumento=instrumento_creado, empaque=empaque_creado, is_primary=validated_data.get('is_primary'),
-            certainty=validated_data.get('certainty')
-        )
+        conn = InstrumentoEmpaque.objects.create(**validated_data)
         return conn
 
 class SetEmpaqueSerializer(serializers.ModelSerializer):
@@ -164,19 +144,9 @@ class SetEmpaqueSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data) -> SetEmpaque:
-        # import ipdb;
-        # ipdb.set_trace()
-        # create key_date_case
-        set_creado = Set.objects.create(**validated_data.get('set'))
-
-        # create icd10
-        empaque_creado = Empaque.objects.create(**validated_data.get('empaque'))
 
         # create connection
-        conn = SetEmpaque.objects.create(
-            set=set_creado, empaque=empaque_creado, is_primary=validated_data.get('is_primary'),
-            certainty=validated_data.get('certainty')
-        )
+        conn = SetEmpaque.objects.create(**validated_data)
         return conn
 
 #*******************************************************************
@@ -198,3 +168,9 @@ class TipoEquipoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TipoEquipo
         fields = '__all__'
+        
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = '__all__'
+        extra_kwargs = {'sets': {'required': False}, 'instrumentos': {'required': False}}

@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Instrumento, InstrumentoEmpaque, InstrumentoSet, Set, Empaque, SetEmpaque, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Instrumento, InstrumentoEmpaque, InstrumentoSet, Set, Empaque, SetEmpaque, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import InstrumentoEmpaqueSerializer, InstrumentoSerializer, InstrumentoSetSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import InstrumentoEmpaqueSerializer, InstrumentoSerializer, InstrumentoSetSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -244,7 +244,7 @@ class DetalleEmpaqueAV(APIView):
         empaque.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
     
-##### ******************      SET ********************************************
+##### ***********************    SET  ********************************************
 
 class SetAV(APIView):
     permission_classes = [IsAdminOrReadOnly]
@@ -290,8 +290,9 @@ class DetalleSetAV(APIView):
         except Set.DoesNotExist:
             return Response({'error': 'Set no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         set.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)        
-
+        return Response(status=status.HTTP_204_NO_CONTENT)   
+         
+# ***************************** SET-EMPAQUE *********************************
 class SetEmpaqueViewSet(viewsets.ModelViewSet):
     permission_classes = ()
     queryset = SetEmpaque.objects.all()
@@ -349,11 +350,39 @@ class DetalleInstrumentoAV(APIView):
         instrumento.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+# ***********************  INSTRUMENTO-SET *************************
+
 class InstrumentoSetViewSet(viewsets.ModelViewSet):
     permission_classes = ()
     queryset = InstrumentoSet.objects.all()
     serializer_class = InstrumentoSetSerializer
+
+class InstrumentoSetCreate(generics.CreateAPIView):
+    print('Iniciando')
+    serializer_class = InstrumentoSetSerializer
+    print ('Despues del serializer')
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        setreal = Set.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        instrumentoreal = Instrumento.objects.get(pk=ik)
+        serializer.save(set=setreal, instrumento=instrumentoreal)
+        
+class ListaInstrumentoSet(generics.ListCreateAPIView):
+    serializer_class = InstrumentoSetSerializer
     
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return InstrumentoSet.objects.filter(set=pk)
+        
+    
+class DetalleInstrumentoSet(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InstrumentoSet.objects.all()
+    serializer_class = InstrumentoSetSerializer
+
+
+# ********************** INSTRUMENTO-EMPAQUE ************************
+
 class InstrumentoEmpaqueViewSet(viewsets.ModelViewSet):
     permission_classes = ()
     queryset = InstrumentoEmpaque.objects.all()
@@ -427,3 +456,53 @@ class DetalleEventoLavado(generics.RetrieveUpdateDestroyAPIView):
     queryset = EventoLavado.objects.all()
     serializer_class = EventoLavadoSerializer
 
+# *************************** TICKET **************************
+class TicketAV(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        tickets = Ticket.objects.all()
+        serializer = TicketSerializer(tickets, many = True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+
+        serializer = TicketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+class DetalleTicketAV(APIView):
+    
+    def get(self, request, pk):
+        try:
+            ticket = Ticket.objects.get(pk=pk) 
+        except Ticket.DoesNotExist:
+            return Response({'error': 'Ticket no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = TicketSerializer(ticket)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            ticket = Ticket.objects.get(pk=pk) 
+        except Ticket.DoesNotExist:
+            return Response({'error': 'Ticket no encontrado'}, status=status.HTTP_404_NOT_FOUND)     
+
+        serializer = TicketSerializer(ticket, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            print(pk)
+            
+            ticket = Ticket.objects.get(pk=pk)
+            print(ticket)
+        except Ticket.DoesNotExist:
+            return Response({'error': 'Ticket no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        ticket.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

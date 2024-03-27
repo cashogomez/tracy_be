@@ -199,8 +199,6 @@ class Ticket(models.Model):
     enfermero = models.ForeignKey(Perfil, on_delete=models.CASCADE, blank=True, null=True, related_name="listaenfermeroticket")
     # prioridad 1 es alta, prioridad 2 es media, prioridad 3 es baja
     prioridad = models.PositiveSmallIntegerField()
-    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True, related_name="listasetticket")
-    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True, related_name="listainstrumentoticket")
     notas = models.CharField(max_length=900, null=True, blank=True, default='')
     activo = models.BooleanField(default=False, null=True, blank=True)
     
