@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Instrumento, InstrumentoEmpaque, InstrumentoSet, Set, Empaque, SetEmpaque, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Instrumento, InstrumentoEmpaque, InstrumentoSet, InstrumentoTicket, Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import InstrumentoEmpaqueSerializer, InstrumentoSerializer, InstrumentoSetSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import InstrumentoEmpaqueSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -506,3 +506,63 @@ class DetalleTicketAV(APIView):
             return Response({'error': 'Ticket no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         ticket.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ***********************  INSTRUMENTO-Ticket *************************
+
+class InstrumentoTicketViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = InstrumentoTicket.objects.all()
+    serializer_class = InstrumentoTicketSerializer
+
+class InstrumentoTicketCreate(generics.CreateAPIView):
+    print('Iniciando')
+    serializer_class = InstrumentoTicketSerializer
+    print ('Despues del serializer')
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        ticketreal = Ticket.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        instrumentoreal = Instrumento.objects.get(pk=ik)
+        serializer.save(ticket=ticketreal, instrumento=instrumentoreal)
+        
+class ListaInstrumentoTicket(generics.ListCreateAPIView):
+    serializer_class = InstrumentoTicketSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return InstrumentoTicket.objects.filter(set=pk)
+        
+    
+class DetalleInstrumentoTicket(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InstrumentoTicket.objects.all()
+    serializer_class = InstrumentoTicketSerializer
+
+# ***********************  Set-Ticket *************************
+
+class SetTicketViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = SetTicket.objects.all()
+    serializer_class = SetTicketSerializer
+
+class SetTicketCreate(generics.CreateAPIView):
+    print('Iniciando')
+    serializer_class = SetTicketSerializer
+    print ('Despues del serializer')
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        ticketreal = Ticket.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        setreal = Set.objects.get(pk=ik)
+        serializer.save(ticket=ticketreal, set=setreal)
+        
+class ListaSetTicket(generics.ListCreateAPIView):
+    serializer_class = SetTicketSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return SetTicket.objects.filter(ticket=pk)
+        
+    
+class DetalleSetTicket(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SetTicket.objects.all()
+    serializer_class = SetTicketSerializer

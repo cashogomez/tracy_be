@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet,  Set, Empaque, SetEmpaque, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet, InstrumentoTicket,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -174,3 +174,34 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = '__all__'
         extra_kwargs = {'sets': {'required': False}, 'instrumentos': {'required': False}}
+        
+# **************************** Multi Multi ticket serializer ****************************
+class SetTicketSerializer(serializers.ModelSerializer):
+    ticket = TicketSerializer()
+    set = SetSerializer()
+
+    class Meta:
+        model = SetTicket
+        fields = "__all__"
+
+    def create(self, validated_data) -> SetTicket:
+        
+        # create connection
+        conn = SetTicket.objects.create(**validated_data)
+        return conn
+
+class InstrumentoTicketSerializer(serializers.ModelSerializer):
+    instrumento = InstrumentoSerializer()
+    ticket = TicketSerializer()
+
+    class Meta:
+        model = InstrumentoTicket
+        fields = "__all__"
+
+    def create(self, validated_data) -> InstrumentoTicket:
+
+        # create connection
+        conn = InstrumentoTicket.objects.create(**validated_data)
+        return conn
+
+#*******************************************************************

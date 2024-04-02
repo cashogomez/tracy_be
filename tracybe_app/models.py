@@ -157,6 +157,7 @@ class SetEmpaque(models.Model):
     set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
     empaque =  models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
+    
 # ******************************************************
 
 class EventoLavado(models.Model):
@@ -210,4 +211,15 @@ class Ticket(models.Model):
     
     def __str__(self):
         return  'Ticket '+str(self.id)
-    
+
+# ***************************************************
+class SetTicket(models.Model):
+    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
+    ticket =  models.ForeignKey(Ticket, on_delete=models.CASCADE, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
+
+class InstrumentoTicket(models.Model):
+    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True)
+    ticket =  models.ForeignKey(Ticket, on_delete=models.CASCADE, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
+# ******************************************************
