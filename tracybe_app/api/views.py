@@ -498,7 +498,7 @@ class DetalleTicketAV(APIView):
         
     def delete(self, request, pk):
         try:
-            print(pk)
+            print('Ticket a borrar '+str(pk))
             
             ticket = Ticket.objects.get(pk=pk)
             print(ticket)
