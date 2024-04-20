@@ -530,7 +530,7 @@ class ListaInstrumentoTicket(generics.ListCreateAPIView):
     
     def get_queryset(self):
         pk = self.kwargs['pk']
-        return InstrumentoTicket.objects.filter(set=pk)
+        return InstrumentoTicket.objects.filter(ticket=pk)
         
     
 class DetalleInstrumentoTicket(generics.RetrieveUpdateDestroyAPIView):

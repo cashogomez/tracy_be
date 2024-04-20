@@ -50,7 +50,33 @@ class  Empaque(models.Model):
     
     def __str__(self):
         return self.tipo +' '+self.caracteristica
-
+    
+class Ticket(models.Model):
+    fecha_cirugia = models.DateTimeField(auto_now_add=True)
+    habitacion = models.IntegerField( null=True, blank=True, default=0)
+    paciente = models.CharField(max_length=250, null=True, blank=True, default='')
+    sala = models.IntegerField( null=True, blank=True, default=0)
+    turno = models.IntegerField( null=True, blank=True, default=0)
+    registro = models.CharField(max_length=100, null=True, blank=True, default='')
+    edad = models.IntegerField( null=True, blank=True, default=0)
+    fecha_nacimiento = models.DateTimeField(auto_now_add=True)
+    diagnostico = models.CharField(max_length=100, null=True, blank=True, default='')
+    cirugia = models.CharField(max_length=250, null=True, blank=True, default='')
+    solicita = models.CharField(max_length=250, null=True, blank=True, default='')
+    cirujano = models.CharField(max_length=250, null=True, blank=True, default='')
+    anestesiologo = models.CharField(max_length=250, null=True, blank=True, default='')
+    anestesia = models.CharField(max_length=250, null=True, blank=True, default='')
+    residente = models.CharField(max_length=250, null=True, blank=True, default='')
+    area_registro = models.CharField(max_length=250, null=True, blank=True, default='')
+    enfermero = models.CharField(max_length=250, null=True, blank=True, default='')
+    prioridad = models.PositiveSmallIntegerField()
+    estatus = models.CharField(max_length=100, null=True, blank=True, default='')
+    notas = models.CharField(max_length=900, null=True, blank=True, default='')
+    activo = models.BooleanField(default=False, null=True, blank=True)
+    
+    def __str__(self):
+        return  'Ticket '+str(self.id)
+    
 class Set(models.Model):
     numero = models.PositiveIntegerField(null=True, default=0)
     maximo = models.PositiveIntegerField(null=True, default=0)
@@ -60,6 +86,7 @@ class Set(models.Model):
     activo = models.BooleanField(default=False)
     
     empaques = models.ManyToManyField(Empaque, through="SetEmpaque")
+    tickets = models.ManyToManyField(Ticket, through="SetTicket")
     
     def __str__(self):
         return self.nombre
@@ -76,9 +103,11 @@ class Evento(models.Model):
     folioPB = models.CharField(max_length=250, null=True, blank=True, default='')
     folioPQ = models.CharField(max_length=250, null=True, blank=True, default='')
     descripcion = models.CharField(max_length=250, null=True, blank=True, default='')
+    
     incidencia = models.CharField(max_length=250, null=True, blank=True, default='')
     notas = models.CharField(max_length=900, null=True, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
+    
     
     def __str__(self):
         return 'Evento: ' + self.descripcion
@@ -116,7 +145,8 @@ class Equipo(models.Model):
     def __str__(self):
         return self.tipoequipo.nombre+' '+str(self.numero)
 
-    
+
+       
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=250)
     cantidad  = models.IntegerField( null=True, blank=True, default=0)
@@ -137,6 +167,7 @@ class Instrumento(models.Model):
     
     sets = models.ManyToManyField(Set, through="InstrumentoSet")
     empaques = models.ManyToManyField(Empaque, through="InstrumentoEmpaque")
+    tickets = models.ManyToManyField(Ticket, through="InstrumentoTicket")
     
     def __str__(self):
         return self.nombre + ' ' + self.tipo+' '+self.marca + ' ' + self.descripcion
@@ -144,20 +175,29 @@ class Instrumento(models.Model):
 
 # ***************** Multi a Multi *********************
 class InstrumentoSet(models.Model):
-    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
-    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True)
+    set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
+    instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
     
 class InstrumentoEmpaque(models.Model):
-    empaque =  models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True)
-    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True)
+    empaque =  models.ForeignKey(Empaque, on_delete=models.DO_NOTHING, blank=True, null=True)
+    instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
 
 class SetEmpaque(models.Model):
-    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
-    empaque =  models.ForeignKey(Empaque, on_delete=models.CASCADE, blank=True, null=True)
+    set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
+    empaque =  models.ForeignKey(Empaque, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
     
+class SetTicket(models.Model):
+    set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
+    ticket =  models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
+
+class InstrumentoTicket(models.Model):
+    instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
+    ticket =  models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
 # ******************************************************
 
 class EventoLavado(models.Model):
@@ -186,40 +226,6 @@ class Paciente(models.Model):
     def __str__(self):
         return  self.nombre+self.paterno+self.materno
     
-class Ticket(models.Model):
-    fecha_cirugia = models.DateTimeField(auto_now_add=True)
-    habitacion = models.IntegerField( null=True, blank='', default=0)
-    paciente = models.CharField(max_length=250, null=True, blank=True, default='')
-    sala = models.IntegerField( null=True, blank='', default=0)
-    turno = models.IntegerField( null=True, blank=True, default=0)
-    registro = models.CharField(max_length=100, null=True, blank=True, default='')
-    edad = models.IntegerField( null=True, blank=True, default=0)
-    fecha_nacimiento = models.DateTimeField(auto_now_add=True)
-    diagnostico = models.CharField(max_length=100, null=True, blank=True, default='')
-    cirugia = models.CharField(max_length=250, null=True, blank=True, default='')
-    solicita = models.CharField(max_length=250, null=True, blank=True, default='')
-    cirujano = models.CharField(max_length=250, null=True, blank=True, default='')
-    anestesiologo = models.CharField(max_length=250, null=True, blank=True, default='')
-    anestesia = models.CharField(max_length=250, null=True,default='')
-    residente = models.CharField(max_length=250, null=True, blank=True, default='')
-    area_registro = models.CharField(max_length=250, null=True, blank=True, default='')
-    enfermero = models.CharField(max_length=250, null=True, blank=True, default='')
-    prioridad = models.PositiveSmallIntegerField()
-    estatus = models.CharField(max_length=100, null=True, blank=True, default='')
-    notas = models.CharField(max_length=900, null=True, blank=True, default='')
-    activo = models.BooleanField(default=False, null=True, blank=True)
-    
-    def __str__(self):
-        return  'Ticket '+str(self.id)
+
 
 # ***************************************************
-class SetTicket(models.Model):
-    set = models.ForeignKey(Set, on_delete=models.CASCADE, blank=True, null=True)
-    ticket =  models.ForeignKey(Ticket, on_delete=models.CASCADE, blank=True, null=True)
-    cantidad = models.IntegerField( blank=True, null=True)
-
-class InstrumentoTicket(models.Model):
-    instrumento = models.ForeignKey(Instrumento, on_delete=models.CASCADE, blank=True, null=True)
-    ticket =  models.ForeignKey(Ticket, on_delete=models.CASCADE, blank=True, null=True)
-    cantidad = models.IntegerField( blank=True, null=True)
-# ******************************************************

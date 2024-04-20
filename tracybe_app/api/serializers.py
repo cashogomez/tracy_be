@@ -185,10 +185,20 @@ class SetTicketSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data) -> SetTicket:
-        
         # create connection
         conn = SetTicket.objects.create(**validated_data)
         return conn
+    
+    def update(self, instance, validated_data) -> SetTicket:
+        #instance.ticket = validated_data.get('ticket', instance.ticket)
+        #instance.set = validated_data.get('set', instance.set)
+        instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        print('--------------------------')
+        print(instance.ticket)
+        #conn = SetTicket.objects.update(**validated_data)
+        instance.save()
+        return instance
+
 
 class InstrumentoTicketSerializer(serializers.ModelSerializer):
     instrumento = InstrumentoSerializer()
@@ -203,5 +213,14 @@ class InstrumentoTicketSerializer(serializers.ModelSerializer):
         # create connection
         conn = InstrumentoTicket.objects.create(**validated_data)
         return conn
+    
+    def update(self, instance, validated_data) -> InstrumentoTicket:
+        #instance.ticket = validated_data.get('ticket', instance.ticket)
+        instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        print('--------------------------')
+        print(instance)
+        #conn = InstrumentoTicket.objects.update(**validated_data)
+        instance.save()
+        return instance
 
 #*******************************************************************
