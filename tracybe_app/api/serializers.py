@@ -193,8 +193,8 @@ class SetTicketSerializer(serializers.ModelSerializer):
         #instance.ticket = validated_data.get('ticket', instance.ticket)
         #instance.set = validated_data.get('set', instance.set)
         instance.cantidad = validated_data.get('cantidad', instance.cantidad)
-        print('--------------------------')
-        print(instance.ticket)
+        #print('--------------------------')
+        #print(instance.ticket)
         #conn = SetTicket.objects.update(**validated_data)
         instance.save()
         return instance
