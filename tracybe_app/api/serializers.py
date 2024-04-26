@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet, InstrumentoTicket,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -223,4 +223,11 @@ class InstrumentoTicketSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+#*******************************************************************
+class MaterialEmpaqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialEmpaque
+        fields = "__all__"
+        
+        
 #*******************************************************************

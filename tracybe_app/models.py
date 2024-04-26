@@ -18,7 +18,6 @@ class AreaSolicitante(models.Model):
     
     def __str__(self):
         return self.tipo+' '+self.nombre
-    
 
 class Turno(models.Model):
     numero = models.IntegerField(default=0)
@@ -145,8 +144,6 @@ class Equipo(models.Model):
     def __str__(self):
         return self.tipoequipo.nombre+' '+str(self.numero)
 
-
-       
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=250)
     cantidad  = models.IntegerField( null=True, blank=True, default=0)
@@ -226,6 +223,9 @@ class Paciente(models.Model):
     def __str__(self):
         return  self.nombre+self.paterno+self.materno
     
-
-
+class MaterialEmpaque(models.Model):
+   nombre = models.CharField(max_length=100, null=True, blank=True, default='')
+   marca = models.CharField(max_length=100, null=True, blank=True, default='')
+   tiempo_vida = models.IntegerField( null=True, blank=True, default=0)
+   unidad = models.CharField(max_length=50, null=True, blank=True, default='')
 # ***************************************************

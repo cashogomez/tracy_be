@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #from tracybe_app.api.views import lista_instrumento, detalle_instrumento
-from tracybe_app.api.views import (CrearTipoEquipo, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleSetTicket, DetalleTicketAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetTicketCreate, TicketAV,
+from tracybe_app.api.views import (AlmacenAV, CrearTipoEquipo, DetalleAlmacenAV, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleSetTicket, DetalleTicketAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, MaterialEmpaqueAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetTicketCreate, TicketAV,
                                     TurnoAV, DetalleTurnoAV, EtapaAV, DetalleEtapaAV, AreaSolicitanteAV, DetalleAreaSolicitanteAV, 
                                     EventoLavadoCreate, ListaEventoLavado, DetalleEventoLavado, EventoCreate, ListaEvento, DetalleEvento,
                                     EquipoAV, DetalleEquipoAV, ListaTipoEquipo, DetalleTipoEquipo)
@@ -58,4 +58,7 @@ urlpatterns = [
     path('ticket/', TicketAV.as_view(), name='lista_ticket'),
     path('ticket/<int:pk>', DetalleTicketAV.as_view(), name='ticket-detail'),
     
+    path('materialempaque/', MaterialEmpaqueAV.as_view(), name='lista-materialempaque'),
+    path('materialempaque/<int:pk>', DetalleMaterialEmpaqueAV.as_view(), name = 'materialempaque-detail'),
+
 ]
