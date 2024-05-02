@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Instrumento, InstrumentoEmpaque, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import InstrumentoEmpaqueSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import  InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -189,7 +189,6 @@ class DetalleTurnoAV(APIView):
 
 ##### ************************ EMPAQUE *************************
 
-#http://127.0.0.1:8000/instrumento/empaque/MjYtMTItMjAyMyAyMzowNTo0MA==
 class BusquedaEmpaqueAV(APIView):
     def get(self, request, cadena):
         empaques = Empaque.objects.filter(codigo_qr__contains=cadena)
@@ -207,11 +206,15 @@ class EmpaqueAV(APIView):
         return Response(serializer.data)
     
     def post(self, request):
+        #request.data['materialempaque'] = MaterialEmpaqueSerializer(request.data['materialempaque'])
+        
         serializer = EmpaqueSerializer(data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
+            print(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DetalleEmpaqueAV(APIView):
@@ -296,7 +299,31 @@ class DetalleSetAV(APIView):
 class SetEmpaqueViewSet(viewsets.ModelViewSet):
     permission_classes = ()
     queryset = SetEmpaque.objects.all()
-    serializer_class = SetEmpaqueSerializer  
+    serializer_class = SetEmpaqueSerializer
+
+class SetEmpaqueCreate(generics.CreateAPIView):
+    print('Iniciando')
+    serializer_class = SetEmpaqueSerializer
+    print ('Despues del serializer')
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        setreal = Set.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        empaquereal = Empaque.objects.get(pk=ik)
+        serializer.save(set=setreal, empaque=empaquereal)
+        
+class ListaSetEmpaque(generics.ListCreateAPIView):
+    serializer_class = SetEmpaqueSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return SetEmpaque.objects.filter(set=pk)
+        
+    
+class DetalleSetEmpaque(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SetEmpaque.objects.all()
+    serializer_class = SetEmpaqueSerializer
+
 
 # ******************************* INSTRUMENTO ******************************
 
@@ -383,10 +410,10 @@ class DetalleInstrumentoSet(generics.RetrieveUpdateDestroyAPIView):
 
 # ********************** INSTRUMENTO-EMPAQUE ************************
 
-class InstrumentoEmpaqueViewSet(viewsets.ModelViewSet):
-    permission_classes = ()
-    queryset = InstrumentoEmpaque.objects.all()
-    serializer_class = InstrumentoEmpaqueSerializer   
+# class InstrumentoEmpaqueViewSet(viewsets.ModelViewSet):
+#     permission_classes = ()
+#     queryset = InstrumentoEmpaque.objects.all()
+#     serializer_class = InstrumentoEmpaqueSerializer   
 # ******************************* Lavadora ******************************
 
 class EquipoAV(APIView):

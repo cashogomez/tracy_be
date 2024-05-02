@@ -33,13 +33,18 @@ class Etapa(models.Model):
     def __str__(self):
         return self.nombre
     
+class MaterialEmpaque(models.Model):
+   nombre = models.CharField(max_length=100, null=True, blank=True, default='')
+   marca = models.CharField(max_length=100, null=True, blank=True, default='')
+   tiempo_vida = models.IntegerField( null=True, blank=True, default=0)
+   unidad = models.CharField(max_length=50, null=True, blank=True, default='')
+   
+   
+# ***************************************************
+
 class  Empaque(models.Model):
-    tipo = models.CharField(max_length=250)
-    caracteristica = models.CharField(max_length=250,null=True, blank=True, default='')
-    marca = models.CharField(max_length=250,null=True, blank=True, default='')
-    modelo = models.CharField(max_length=250,null=True, blank=True, default='')
+    realizados = models.IntegerField(default=0, null=True, blank=True)
     codigo_qr = models.CharField(max_length=250, null=True, blank=True, default='')
-    caducidad = models.PositiveSmallIntegerField()
     #  rojo = 30 % de los ultimos dias
     #  naranja = 40% de los siguientes dias
     #  amarillo = 30% de los primeros dias
@@ -47,8 +52,10 @@ class  Empaque(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True) 
     
+    materialempaque = models.ForeignKey(MaterialEmpaque, unique=True, on_delete=models.CASCADE, null=True, blank=True, related_name="material_empaque")
+    
     def __str__(self):
-        return self.tipo +' '+self.caracteristica
+        return self.codigo_qr
     
 class Ticket(models.Model):
     fecha_cirugia = models.DateTimeField(auto_now_add=True)
@@ -163,7 +170,7 @@ class Instrumento(models.Model):
     update = models.DateTimeField(auto_now=True) 
     
     sets = models.ManyToManyField(Set, through="InstrumentoSet")
-    empaques = models.ManyToManyField(Empaque, through="InstrumentoEmpaque")
+    #empaques = models.ManyToManyField(Empaque, through="InstrumentoEmpaque")
     tickets = models.ManyToManyField(Ticket, through="InstrumentoTicket")
     
     def __str__(self):
@@ -176,10 +183,10 @@ class InstrumentoSet(models.Model):
     instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
     
-class InstrumentoEmpaque(models.Model):
-    empaque =  models.ForeignKey(Empaque, on_delete=models.DO_NOTHING, blank=True, null=True)
-    instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
-    cantidad = models.IntegerField( blank=True, null=True)
+#class InstrumentoEmpaque(models.Model):
+#    empaque =  models.ForeignKey(Empaque, on_delete=models.DO_NOTHING, blank=True, null=True)
+#    instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
+#    cantidad = models.IntegerField( blank=True, null=True)
 
 class SetEmpaque(models.Model):
     set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -223,9 +230,3 @@ class Paciente(models.Model):
     def __str__(self):
         return  self.nombre+self.paterno+self.materno
     
-class MaterialEmpaque(models.Model):
-   nombre = models.CharField(max_length=100, null=True, blank=True, default='')
-   marca = models.CharField(max_length=100, null=True, blank=True, default='')
-   tiempo_vida = models.IntegerField( null=True, blank=True, default=0)
-   unidad = models.CharField(max_length=50, null=True, blank=True, default='')
-# ***************************************************

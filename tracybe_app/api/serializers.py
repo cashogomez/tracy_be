@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento, InstrumentoEmpaque, InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -75,36 +75,56 @@ class SetSerializer(serializers.ModelSerializer):
         model = Set
         fields = "__all__"
         extra_kwargs = {'empaques': {'required': False}}
+#*******************************************************************
+class MaterialEmpaqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialEmpaque
+        fields = "__all__"
+        
+        
+#*******************************************************************
 
 class EmpaqueSerializer(serializers.ModelSerializer):
-    semaforo = serializers.SerializerMethodField()
-    listaempaqueevento = EventoSerializer(many = True, read_only = True)
-    
+    #semaforo = serializers.SerializerMethodField()
+    #listaempaqueevento = EventoSerializer(many = True, read_only = True)
+    materialempaque = MaterialEmpaqueSerializer()
     
     class Meta:
         model = Empaque
         fields = "__all__"
         
-    def get_semaforo(self, object):
-        dias_caduca = object.caducidad
-        ahora = datetime.now(timezone.utc)
-        if object.created is not None:
-            creado = object.created
-            delta = creado - ahora
-            if dias_caduca > 0:
-                pc = delta.days // dias_caduca
-                if pc < int(0.3*dias_caduca):
-                    return 'B'
-                elif pc>= int(0.3*dias_caduca) and pc < int(0.7*dias_caduca):
-                    return 'I'
-                elif pc>= int(0.7*dias_caduca) and pc <= dias_caduca:
-                    return 'A'
-                else:
-                    return 'C'
-            else:
-                return 'E'
-        else:
-            return 'E'
+    def create(self, validated_data) -> Empaque:
+        # create connection
+        material = MaterialEmpaque.objects.create(**validated_data['materialempaque'])
+        validated_data['materialempaque'] = material
+        conn = Empaque.objects.create(**validated_data)
+        return conn
+    
+    def update(self, instance, validated_data) -> Empaque:
+        instance.save()
+        return instance
+    
+    
+    # def get_semaforo(self, object):
+    #     dias_caduca = object.caducidad
+    #     ahora = datetime.now(timezone.utc)
+    #     if object.created is not None:
+    #         creado = object.created
+    #         delta = creado - ahora
+    #         if dias_caduca > 0:
+    #             pc = delta.days // dias_caduca
+    #             if pc < int(0.3*dias_caduca):
+    #                 return 'B'
+    #             elif pc>= int(0.3*dias_caduca) and pc < int(0.7*dias_caduca):
+    #                 return 'I'
+    #             elif pc>= int(0.7*dias_caduca) and pc <= dias_caduca:
+    #                 return 'A'
+    #             else:
+    #                 return 'C'
+    #         else:
+    #             return 'E'
+    #     else:
+    #         return 'E'
         
 # **************************** SERIALIZER Multy Multy ***************************
 class InstrumentoSetSerializer(serializers.ModelSerializer):
@@ -121,19 +141,19 @@ class InstrumentoSetSerializer(serializers.ModelSerializer):
         conn = InstrumentoSet.objects.create(**validated_data)
         return conn
 
-class InstrumentoEmpaqueSerializer(serializers.ModelSerializer):
-    instrumento = InstrumentoSerializer()
-    empaque = EmpaqueSerializer()
+# class InstrumentoEmpaqueSerializer(serializers.ModelSerializer):
+#     instrumento = InstrumentoSerializer()
+#     empaque = EmpaqueSerializer()
 
-    class Meta:
-        model = InstrumentoEmpaque
-        fields = "__all__"
+#     class Meta:
+#         model = InstrumentoEmpaque
+#         fields = "__all__"
 
-    def create(self, validated_data) -> InstrumentoEmpaque:
+#     def create(self, validated_data) -> InstrumentoEmpaque:
         
-        # create connection
-        conn = InstrumentoEmpaque.objects.create(**validated_data)
-        return conn
+#         # create connection
+#         conn = InstrumentoEmpaque.objects.create(**validated_data)
+#         return conn
 
 class SetEmpaqueSerializer(serializers.ModelSerializer):
     set = SetSerializer()
@@ -223,11 +243,3 @@ class InstrumentoTicketSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-#*******************************************************************
-class MaterialEmpaqueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MaterialEmpaque
-        fields = "__all__"
-        
-        
-#*******************************************************************
