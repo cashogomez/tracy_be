@@ -39,6 +39,8 @@ class MaterialEmpaque(models.Model):
    tiempo_vida = models.IntegerField( null=True, blank=True, default=0)
    unidad = models.CharField(max_length=50, null=True, blank=True, default='')
    
+   def __str__(self):
+        return self.nombre
    
 # ***************************************************
 
@@ -52,7 +54,7 @@ class  Empaque(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True) 
     
-    materialempaque = models.ForeignKey(MaterialEmpaque, unique=True, on_delete=models.CASCADE, null=True, blank=True, related_name="material_empaque")
+    materialempaque = models.ForeignKey(MaterialEmpaque,  on_delete=models.CASCADE, null=True, blank=True, related_name="materialempaque")
     
     def __str__(self):
         return self.codigo_qr

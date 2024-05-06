@@ -214,9 +214,19 @@ class EmpaqueAV(APIView):
             serializer.save()
             return Response(serializer.data)
         else:
-            print(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
+class EmpaqueCreate(generics.CreateAPIView):
+    serializer_class = EmpaqueSerializer
+    print ('Despues del serializer')
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        materialempaquereal = MaterialEmpaque.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        set = Set.objects.get(pk=ik)
+        print (materialempaquereal)
+        serializer.save(materialempaque=materialempaquereal, set=set)
+        
 class DetalleEmpaqueAV(APIView):
     def get(self, request, pk):
         try:
@@ -639,52 +649,3 @@ class DetalleMaterialEmpaqueAV(APIView):
         areasolicitante.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
     
-# ************************ Almacen **********************
-class AlmacenAV(APIView):
-    def get(self, request):
-        areassolicitantes = Almacen.objects.all()
-        serializer = AlmacenSerializer(areassolicitantes, many=True, context = {"request": request})
-        return Response(serializer.data)
-    
-    def post(self, request):
-        
-        print(request.data)
-        serializer = AlmacenSerializer(data=request.data)
-        print('**********************')
-        print(serializer)
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class DetalleAlmacenAV(APIView):
-    def get(self, request, pk):
-        try:
-            areasolicitante = Almacen.objects.get(pk=pk)
-        except Almacen.DoesNotExist:
-            return Response({'error': 'El almacén no existe'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = AlmacenSerializer(areasolicitante, context={'request': request})
-        return Response(serializer.data)
-    
-    def put(self, request, pk):
-        try:
-            areasolicitante = Almacen.objects.get(pk=pk)
-        except Almacen.DoesNotExist:
-            return Response({'error': 'El almacen no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = AlmacenSerializer(areasolicitante, data=request.data,  context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def delete(self, request, pk):
-        try:
-            areasolicitante = Almacen.objects.get(pk=pk)
-        except Almacen.DoesNotExist:
-            return Response({'error': 'El almacen no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        areasolicitante.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT) 

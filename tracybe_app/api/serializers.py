@@ -88,17 +88,15 @@ class EmpaqueSerializer(serializers.ModelSerializer):
     #semaforo = serializers.SerializerMethodField()
     #listaempaqueevento = EventoSerializer(many = True, read_only = True)
     materialempaque = MaterialEmpaqueSerializer()
+    set = SetSerializer()
     
     class Meta:
         model = Empaque
         fields = "__all__"
         
     def create(self, validated_data) -> Empaque:
-        # create connection
-        material = MaterialEmpaque.objects.create(**validated_data['materialempaque'])
-        validated_data['materialempaque'] = material
-        conn = Empaque.objects.create(**validated_data)
-        return conn
+        empaque = Empaque.objects.create(**validated_data)
+        return empaque
     
     def update(self, instance, validated_data) -> Empaque:
         instance.save()
