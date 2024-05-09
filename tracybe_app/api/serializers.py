@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (CiclosEquipo, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -186,7 +186,7 @@ class TipoEquipoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TipoEquipo
         fields = '__all__'
-        
+
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
@@ -238,6 +238,29 @@ class InstrumentoTicketSerializer(serializers.ModelSerializer):
         print('--------------------------')
         print(instance)
         #conn = InstrumentoTicket.objects.update(**validated_data)
+        instance.save()
+        return instance
+
+class CiclosEquipoSerializer(serializers.ModelSerializer):
+    ciclo = CicloSerializer()
+    Equipo = EquipoSerializer()
+
+    class Meta:
+        model = CiclosEquipo
+        fields = "__all__"
+
+    def create(self, validated_data) -> CiclosEquipo:
+        # create connection
+        conn = CiclosEquipo.objects.create(**validated_data)
+        return conn
+    
+    def update(self, instance, validated_data) -> CiclosEquipo:
+        #instance.ticket = validated_data.get('ticket', instance.ticket)
+        #instance.set = validated_data.get('set', instance.set)
+        #instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        #print('--------------------------')
+        #print(instance.ticket)
+        #conn = SetTicket.objects.update(**validated_data)
         instance.save()
         return instance
 

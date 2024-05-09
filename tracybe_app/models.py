@@ -131,27 +131,26 @@ class TipoEquipo(models.Model):
     def __str__(self):
         return self.nombre
     
-    
-class Ciclo(models.Model):
-    nombre = models.CharField(max_length=250)
-    duracion = models.TimeField(default=datetime.time(8, 0, 0) ) 
-    temperatura = models.IntegerField(default=120, null=True, blank=True)
-    
-    
-    def __str__(self):
-        return 'Ciclo ' + self.nombre
-    
 class Equipo(models.Model):
     numero = models.PositiveSmallIntegerField()
     tipoequipo = models.ForeignKey(TipoEquipo, on_delete=models.CASCADE, related_name="listatipoequipoequipo")
     estatus = models.ForeignKey(Estatus, on_delete=models.CASCADE, related_name="listaestatusequipo")
-    ciclos = models.ManyToManyField(Ciclo, related_name='equipos', blank=True)
     marca = models.CharField(max_length=250, blank=True, null = True, default='')
     modelo = models.CharField(max_length=250, blank=True, null = True, default='')
     numero_serie = models.CharField(max_length=250, blank=True, null = True, default='')
     
     def __str__(self):
         return self.tipoequipo.nombre+' '+str(self.numero)
+
+class Ciclo(models.Model):
+    nombre = models.CharField(max_length=250)
+    duracion = models.TimeField(default=datetime.time(8, 0, 0) ) 
+    temperatura = models.IntegerField(default=120, null=True, blank=True)
+    
+    equipos = models.ManyToManyField(Equipo, through="CiclosEquipo")
+    
+    def __str__(self):
+        return 'Ciclo ' + self.nombre
 
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=250)
@@ -180,6 +179,10 @@ class Instrumento(models.Model):
 
 
 # ***************** Multi a Multi *********************
+class CiclosEquipo(models.Model):
+    ciclo = models.ForeignKey(Ciclo, on_delete=models.DO_NOTHING, blank=True, null=True)
+    equipo = models.ForeignKey(Equipo, on_delete=models.DO_NOTHING, blank=True, null=True)
+    
 class InstrumentoSet(models.Model):
     set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
     instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)

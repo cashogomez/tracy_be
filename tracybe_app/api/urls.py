@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #from tracybe_app.api.views import lista_instrumento, detalle_instrumento
-from tracybe_app.api.views import ( CrearTipoEquipo, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleSetTicket, DetalleTicketAV, EmpaqueCreate, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, MaterialEmpaqueAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetTicketCreate, TicketAV,
+from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate, CrearTipoEquipo, DetalleCicloAV, DetalleCiclosEquipo, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleSetTicket, DetalleTicketAV, EmpaqueCreate, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, MaterialEmpaqueAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetTicketCreate, TicketAV,
                                     TurnoAV, DetalleTurnoAV, EtapaAV, DetalleEtapaAV, AreaSolicitanteAV, DetalleAreaSolicitanteAV, 
                                     EventoLavadoCreate, ListaEventoLavado, DetalleEventoLavado, EventoCreate, ListaEvento, DetalleEvento,
                                     EquipoAV, DetalleEquipoAV, ListaTipoEquipo, DetalleTipoEquipo)
@@ -62,4 +62,10 @@ urlpatterns = [
     path('materialempaque/', MaterialEmpaqueAV.as_view(), name='lista-materialempaque'),
     path('materialempaque/<int:pk>', DetalleMaterialEmpaqueAV.as_view(), name = 'materialempaque-detail'),
 
+    path('ciclo/', CicloAV.as_view(), name='lista-ciclo'),
+    path('ciclo/<int:pk>', DetalleCicloAV.as_view(), name = 'ciclo-detail'),
+    
+    path('equipo/<int:pk>/ciclo/<int:ik>/', CiclosEquipoCreate.as_view(), name= 'ciclosequipo-create'),
+    path('equipo/<int:pk>/ciclosequipo/',ListaCiclosEquipo.as_view(), name='ciclosequipo-list'),
+    path('equipo/ciclosequipo/<int:pk>', DetalleCiclosEquipo.as_view(), name='ciclosequipo-detail'),
 ]

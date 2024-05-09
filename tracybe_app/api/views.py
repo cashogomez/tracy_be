@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Ciclo, CiclosEquipo, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import  InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+
 
 # *********************** TIPO de Equipo *******************
 class CrearTipoEquipo(generics.CreateAPIView):
@@ -417,6 +418,36 @@ class DetalleInstrumentoSet(generics.RetrieveUpdateDestroyAPIView):
     queryset = InstrumentoSet.objects.all()
     serializer_class = InstrumentoSetSerializer
 
+# ***********************  CICLO - EQUIPO *************************
+
+class CiclosEquipoViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = CiclosEquipo.objects.all()
+    serializer_class = CiclosEquipoSerializer
+
+class CiclosEquipoCreate(generics.CreateAPIView):
+    print('Iniciando')
+    serializer_class = CiclosEquipoSerializer
+    print ('Despues del serializer')
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        cicloreal = Ciclo.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        equiporeal = Equipo.objects.get(pk=ik)
+        serializer.save(ciclo=cicloreal, equipo=equiporeal)
+        
+class ListaCiclosEquipo(generics.ListCreateAPIView):
+    serializer_class = CiclosEquipoSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return CiclosEquipo.objects.filter(set=pk)
+        
+    
+class DetalleCiclosEquipo(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CiclosEquipo.objects.all()
+    serializer_class = CiclosEquipoSerializer
+
 
 # ********************** INSTRUMENTO-EMPAQUE ************************
 
@@ -649,3 +680,46 @@ class DetalleMaterialEmpaqueAV(APIView):
         areasolicitante.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
     
+# ************************ Material Empaque  **********************
+class CicloAV(APIView):
+    def get(self, request):
+        ciclossolicitantes = Ciclo.objects.all()
+        serializer = CicloSerializer(ciclossolicitantes, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = CicloSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+
+class DetalleCicloAV(APIView):
+    def get(self, request, pk):
+        try:
+            ciclosolicitante = Ciclo.objects.get(pk=pk)
+        except Ciclo.DoesNotExist:
+            return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CicloSerializer(ciclosolicitante, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            ciclosolicitante = Ciclo.objects.get(pk=pk)
+        except Ciclo.DoesNotExist:
+            return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CicloSerializer(ciclosolicitante, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            ciclosolicitante = Ciclo.objects.get(pk=pk)
+        except Ciclo.DoesNotExist:
+            return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        ciclosolicitante.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
