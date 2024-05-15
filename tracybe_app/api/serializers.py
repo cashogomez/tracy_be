@@ -88,7 +88,6 @@ class EmpaqueSerializer(serializers.ModelSerializer):
     #semaforo = serializers.SerializerMethodField()
     #listaempaqueevento = EventoSerializer(many = True, read_only = True)
     materialempaque = MaterialEmpaqueSerializer()
-    set = SetSerializer()
     
     class Meta:
         model = Empaque

@@ -223,10 +223,7 @@ class EmpaqueCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
         materialempaquereal = MaterialEmpaque.objects.get(pk=pk)
-        ik = self.kwargs.get('ik')
-        set = Set.objects.get(pk=ik)
-        print (materialempaquereal)
-        serializer.save(materialempaque=materialempaquereal, set=set)
+        serializer.save(materialempaque=materialempaquereal)
         
 class DetalleEmpaqueAV(APIView):
     def get(self, request, pk):
@@ -313,9 +310,7 @@ class SetEmpaqueViewSet(viewsets.ModelViewSet):
     serializer_class = SetEmpaqueSerializer
 
 class SetEmpaqueCreate(generics.CreateAPIView):
-    print('Iniciando')
     serializer_class = SetEmpaqueSerializer
-    print ('Despues del serializer')
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
         setreal = Set.objects.get(pk=pk)
