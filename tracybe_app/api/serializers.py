@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (CiclosEquipo, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (CiclosEquipo, Estatus, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -15,6 +15,11 @@ class AreaSolicitanteSerializer(serializers.ModelSerializer):
         model = AreaSolicitante
         fields = '__all__'
 
+class EstatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Estatus
+        fields = '__all__'
+        
 class EtapaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Etapa
@@ -179,12 +184,6 @@ class CicloSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ciclo
         fields = '__all__'
-        
-class TipoEquipoSerializer(serializers.ModelSerializer):
-    listatipoequipoequipo = EquipoSerializer(many=True, read_only=True)
-    class Meta:
-        model = TipoEquipo
-        fields = '__all__'
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -242,7 +241,7 @@ class InstrumentoTicketSerializer(serializers.ModelSerializer):
 
 class CiclosEquipoSerializer(serializers.ModelSerializer):
     ciclo = CicloSerializer()
-    Equipo = EquipoSerializer()
+    equipo = EquipoSerializer()
 
     class Meta:
         model = CiclosEquipo

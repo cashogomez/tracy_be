@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Ciclo, CiclosEquipo, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, TipoEquipo, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TipoEquipoSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -14,19 +14,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
 
-# *********************** TIPO de Equipo *******************
-class CrearTipoEquipo(generics.CreateAPIView):
-    queryset =  TipoEquipo.objects.all()
-    serializer_class = TipoEquipoSerializer
-    
-    
-class ListaTipoEquipo(generics.ListCreateAPIView):
-    queryset =  TipoEquipo.objects.all()
-    serializer_class = TipoEquipoSerializer
-
-class DetalleTipoEquipo(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TipoEquipo.objects.all()
-    serializer_class = TipoEquipoSerializer
 
 # ************************ Evento ***************************
 class EventoCreate(generics.CreateAPIView):
@@ -426,9 +413,9 @@ class CiclosEquipoCreate(generics.CreateAPIView):
     print ('Despues del serializer')
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
-        cicloreal = Ciclo.objects.get(pk=pk)
+        equiporeal = Equipo.objects.get(pk=pk)
         ik = self.kwargs.get('ik')
-        equiporeal = Equipo.objects.get(pk=ik)
+        cicloreal = Ciclo.objects.get(pk=ik)
         serializer.save(ciclo=cicloreal, equipo=equiporeal)
         
 class ListaCiclosEquipo(generics.ListCreateAPIView):
@@ -436,7 +423,7 @@ class ListaCiclosEquipo(generics.ListCreateAPIView):
     
     def get_queryset(self):
         pk = self.kwargs['pk']
-        return CiclosEquipo.objects.filter(set=pk)
+        return CiclosEquipo.objects.filter(equipo=pk)
         
     
 class DetalleCiclosEquipo(generics.RetrieveUpdateDestroyAPIView):
@@ -717,4 +704,50 @@ class DetalleCicloAV(APIView):
         except Ciclo.DoesNotExist:
             return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
         ciclosolicitante.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+    
+# ************************  ESTATUS **********************
+
+class EstatusAV(APIView):
+    def get(self, request):
+        estatus = Estatus.objects.all()
+        serializer = EstatusSerializer(estatus, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = EstatusSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DetalleEstatusAV(APIView):
+    def get(self, request, pk):
+        try:
+            estatus = Estatus.objects.get(pk=pk)
+        except Estatus.DoesNotExist:
+            return Response({'error': 'Estatus no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = TurnoSerializer(estatus, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            estatus = Estatus.objects.get(pk=pk)
+        except Estatus.DoesNotExist:
+            return Response({'error': 'Estatus no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = EstatusSerializer(estatus, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            estatus = Estatus.objects.get(pk=pk)
+        except Estatus.DoesNotExist:
+            return Response({'error': 'Estatus no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        estatus.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 

@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #from tracybe_app.api.views import lista_instrumento, detalle_instrumento
-from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate, CrearTipoEquipo, DetalleCicloAV, DetalleCiclosEquipo, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleSetTicket, DetalleTicketAV, EmpaqueCreate, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, MaterialEmpaqueAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetEmpaqueCreate, SetTicketCreate, TicketAV,
+from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate,  DetalleCicloAV, DetalleCiclosEquipo, DetalleEstatusAV, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleSetTicket, DetalleTicketAV, EmpaqueCreate, EstatusAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, MaterialEmpaqueAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetEmpaqueCreate, SetTicketCreate, TicketAV,
                                     TurnoAV, DetalleTurnoAV, EtapaAV, DetalleEtapaAV, AreaSolicitanteAV, DetalleAreaSolicitanteAV, 
                                     EventoLavadoCreate, ListaEventoLavado, DetalleEventoLavado, EventoCreate, ListaEvento, DetalleEvento,
-                                    EquipoAV, DetalleEquipoAV, ListaTipoEquipo, DetalleTipoEquipo)
+                                    EquipoAV, DetalleEquipoAV )
 
 
 urlpatterns = [
@@ -21,9 +21,6 @@ urlpatterns = [
     path('ticket/<int:pk>/instrumento/', ListaInstrumentoTicket.as_view(), name='listainstrumentoticket-list'),
     path('ticket/instrumento/<int:pk>', DetalleInstrumentoTicket.as_view(), name='instrumentoticket-detail'),
     
-    path('tipoequipo/crear/', CrearTipoEquipo.as_view(), name='tipoequipo-create'),
-    path('tipoequipo/', ListaTipoEquipo.as_view(), name='lista-tipoequipo'),
-    path('tipoequipo/<int:pk>', DetalleTipoEquipo.as_view(), name = 'tipoequipo-detail'),
     
     path('instrumento/', InstrumentoAV.as_view(), name='lista_instrumento'),
     path('instrumento/<int:pk>', DetalleInstrumentoAV.as_view(), name='instrumento-detail'),
@@ -70,4 +67,7 @@ urlpatterns = [
     path('equipo/<int:pk>/ciclo/<int:ik>', CiclosEquipoCreate.as_view(), name= 'ciclosequipo-create'),
     path('equipo/<int:pk>/ciclosequipo/',ListaCiclosEquipo.as_view(), name='ciclosequipo-list'),
     path('equipo/ciclosequipo/<int:pk>', DetalleCiclosEquipo.as_view(), name='ciclosequipo-detail'),
+    
+    path('estatus/', EstatusAV.as_view(), name='lista_estatus'),
+    path('estatus/<int:pk>', DetalleEstatusAV.as_view(), name='estatus-detail'),
 ]

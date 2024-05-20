@@ -126,31 +126,26 @@ class Estatus(models.Model):
     def __str__(self):
         return self.nombre
 
-class TipoEquipo(models.Model):
-    nombre = models.CharField(max_length= 250)
-    def __str__(self):
-        return self.nombre
-    
-class Equipo(models.Model):
-    numero = models.PositiveSmallIntegerField()
-    tipoequipo = models.ForeignKey(TipoEquipo, on_delete=models.CASCADE, related_name="listatipoequipoequipo")
-    estatus = models.ForeignKey(Estatus, on_delete=models.CASCADE, related_name="listaestatusequipo")
-    marca = models.CharField(max_length=250, blank=True, null = True, default='')
-    modelo = models.CharField(max_length=250, blank=True, null = True, default='')
-    numero_serie = models.CharField(max_length=250, blank=True, null = True, default='')
-    
-    def __str__(self):
-        return self.tipoequipo.nombre+' '+str(self.numero)
-
 class Ciclo(models.Model):
     nombre = models.CharField(max_length=250)
     duracion = models.TimeField(default=datetime.time(8, 0, 0) ) 
     temperatura = models.IntegerField(default=120, null=True, blank=True)
     
-    equipos = models.ManyToManyField(Equipo, through="CiclosEquipo")
-    
     def __str__(self):
         return 'Ciclo ' + self.nombre
+    
+class Equipo(models.Model):
+    numero = models.PositiveSmallIntegerField()
+    nombre = models.CharField(max_length=150, blank=True, null = True, default='')
+    estatus = models.CharField(max_length=150, blank=True, null = True, default='')
+    marca = models.CharField(max_length=250, blank=True, null = True, default='')
+    modelo = models.CharField(max_length=250, blank=True, null = True, default='')
+    numero_serie = models.CharField(max_length=250, blank=True, null = True, default='')
+    ciclos = models.ManyToManyField(Ciclo, through="CiclosEquipo")
+    
+    def __str__(self):
+        return self.nombre+' '+str(self.numero)
+
 
 class Instrumento(models.Model):
     nombre = models.CharField(max_length=250)
