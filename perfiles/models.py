@@ -60,13 +60,14 @@ class MiPerfilManager(BaseUserManager):
             area = area,
             telefono = telefono,
             empresa_id = empresa_id,
-            numeroEmpleado = numeroEmpleado
+            numeroEmpleado = numeroEmpleado,
+            is_admin = True,
+            is_active = True,
+            is_staff = True,
+            is_superadmin = True
         )
         
-        user.is_admin = True
-        user.is_active = True
-        user.is_staff = True
-        user.is_superadmin = True
+       
         user.save(using=self._db)
         return user
         
