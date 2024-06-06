@@ -47,7 +47,7 @@ class MiPerfilManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, nombre, paterno, materno, username, email,puesto, area, foto, telefono, empresa_id, numeroEmpleado,  password=None):
+    def create_superuser(self, nombre, paterno, materno, username, email, foto, telefono, puesto, area, empresa_id, numeroEmpleado,  password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
@@ -60,15 +60,13 @@ class MiPerfilManager(BaseUserManager):
             area = area,
             telefono = telefono,
             empresa_id = empresa_id,
-            numeroEmpleado = numeroEmpleado,       
-            is_admin = True,
-            is_active = True,
-            is_staff = True,
-            is_superadmin = True,
-
+            numeroEmpleado = numeroEmpleado
         )
         
-
+        user.is_admin = True
+        user.is_active = True
+        user.is_staff = True
+        user.is_superadmin = True
         user.save(using=self._db)
         return user
         
@@ -82,9 +80,8 @@ class Perfil(AbstractBaseUser):
     telefono = models.CharField(max_length=50)
     foto = models.CharField(max_length=500, default='')
     
-    puesto =  models.CharField(max_length=50, unique=True)
-    area =   models.CharField(max_length=50, unique=True)
-    empresa_id =  models.CharField(max_length=50)
+    puesto = models.CharField(max_length=50)
+    area =  models.CharField(max_length=50)
     numeroEmpleado = models.CharField(max_length=50)
     
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -95,7 +92,7 @@ class Perfil(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'empresa_id','puesto', 'area' 'numeroEmpleado']
+    REQUIRED_FIELDS = ['nombre', 'paterno', 'materno',' username', 'email', 'foto', 'telefono', 'puesto', 'area', 'empresa_id', 'numeroEmpleado',]
     
     objects = MiPerfilManager()
     
