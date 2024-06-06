@@ -47,7 +47,7 @@ class MiPerfilManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, nombre, paterno, materno, username, email, foto, telefono, puesto, area, empresa_id, numeroEmpleado,  password=None):
+    def create_superuser(self, nombre, paterno, materno, username, email, foto, telefono, empresa_id, numeroEmpleado,  password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
@@ -58,8 +58,8 @@ class MiPerfilManager(BaseUserManager):
 
         )
         user.foto = foto,
-        user.puesto = puesto,
-        user.area = area,
+        #user.puesto = puesto,
+        #user.area = area,
         user.telefono = telefono,
         user.empresa_id = empresa_id,
         user.numeroEmpleado = numeroEmpleado       
@@ -93,7 +93,7 @@ class Perfil(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'puesto', 'area', 'empresa_id', 'numeroEmpleado']
+    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'empresa_id', 'numeroEmpleado']
     
     objects = MiPerfilManager()
     
