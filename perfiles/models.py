@@ -80,8 +80,8 @@ class Perfil(AbstractBaseUser):
     telefono = models.CharField(max_length=50)
     foto = models.CharField(max_length=500, default='')
     
-    puesto = models.ForeignKey(Puesto, on_delete=models.CASCADE, blank=True, null=True, related_name="listapuestoperfil")
-    area =  models.ForeignKey(AreaTrabajo, on_delete=models.CASCADE, blank=True, null=True, related_name="listaareaperfil")
+    puesto = models.CharField(max_length=50)
+    area =  models.CharField(max_length=50)
     empresa_id =  models.CharField(max_length=50)
     numeroEmpleado = models.CharField(max_length=50)
     
