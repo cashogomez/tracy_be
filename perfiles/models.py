@@ -93,7 +93,7 @@ class Perfil(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'empresa_id', 'numeroEmpleado']
+    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'puesto', 'area', 'empresa_id', 'numeroEmpleado']
     
     objects = MiPerfilManager()
     
