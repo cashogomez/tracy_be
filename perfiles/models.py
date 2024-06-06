@@ -80,8 +80,9 @@ class Perfil(AbstractBaseUser):
     telefono = models.CharField(max_length=50)
     foto = models.CharField(max_length=500, default='')
     
-    puesto = models.CharField(max_length=50)
-    area =  models.CharField(max_length=50)
+    puesto = models.ForeignKey(Puesto, on_delete=models.CASCADE, blank=True, null=True, related_name="listapuestoperfil")
+    area =  models.ForeignKey(AreaTrabajo, on_delete=models.CASCADE, blank=True, null=True, related_name="listaareaperfil")
+    empresa_id =  models.CharField(max_length=50)
     numeroEmpleado = models.CharField(max_length=50)
     
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -92,7 +93,7 @@ class Perfil(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre', 'paterno', 'materno',' username', 'email', 'foto', 'telefono', 'puesto', 'area', 'empresa_id', 'numeroEmpleado',]
+    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'puesto', 'area', 'empresa_id', 'numeroEmpleado']
     
     objects = MiPerfilManager()
     
