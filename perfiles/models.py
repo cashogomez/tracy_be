@@ -55,14 +55,14 @@ class MiPerfilManager(BaseUserManager):
             nombre = nombre,
             paterno = paterno,
             materno = materno,
-
+            foto = foto,
+            puesto = puesto,
+            area = area,
+            telefono = telefono,
+            empresa_id = empresa_id,
+            numeroEmpleado = numeroEmpleado
         )
-        foto = foto,
-        puesto = puesto,
-        area = area,
-        telefono = telefono,
-        empresa_id = empresa_id,
-        numeroEmpleado = numeroEmpleado
+        
         user.is_admin = True
         user.is_active = True
         user.is_staff = True
@@ -93,7 +93,7 @@ class Perfil(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno']
+    REQUIRED_FIELDS = ['username', 'nombre', 'paterno', 'materno', 'foto', 'telefono', 'puesto', 'area', 'empresa_id', 'numeroEmpleado' ]
     
     objects = MiPerfilManager()
     
