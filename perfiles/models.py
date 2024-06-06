@@ -48,8 +48,8 @@ class MiPerfilManager(BaseUserManager):
         return user
     
     def create_superuser(self, nombre, paterno, materno, username, email, foto, telefono, empresa_id, numeroEmpleado,  password=None):
-        puestoSuper: Puesto = self.model('Chingon'),
-        areaT: AreaTrabajo = self.model(tipo='hospital', nombre='Administración'),
+        puestoSuper: Puesto = self.model(tipo = 'Chingon'),
+        areaT: AreaTrabajo = self.model('hospital', 'Administración'),
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
