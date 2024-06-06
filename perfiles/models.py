@@ -55,18 +55,20 @@ class MiPerfilManager(BaseUserManager):
             nombre = nombre,
             paterno = paterno,
             materno = materno,
+            foto = foto,
+            puesto = 0,
+            area = 0,
+            telefono = telefono,
+            empresa_id = empresa_id,
+            numeroEmpleado = numeroEmpleado,       
+            is_admin = True,
+            is_active = True,
+            is_staff = True,
+            is_superadmin = True,
 
         )
-        user.foto = foto,
-        #user.puesto = puesto,
-        #user.area = area,
-        user.telefono = telefono,
-        user.empresa_id = empresa_id,
-        user.numeroEmpleado = numeroEmpleado       
-        user.is_admin = True
-        user.is_active = True
-        user.is_staff = True
-        user.is_superadmin = True
+        
+
         user.save(using=self._db)
         return user
         
