@@ -72,7 +72,7 @@ def perfil_view(request):
         if serializer.is_valid():
             cuenta = serializer.save()
             print('********************************')
-            print(cuenta.puesto.id)
+            print(cuenta.puesto)
             print('++++++++++++++++++++++++++++++++')
             data['response'] = 'El registro del usuario fue exitoso'
             data['username'] = cuenta.username
@@ -82,8 +82,8 @@ def perfil_view(request):
             data['materno'] = cuenta.materno
             data['telefono'] = cuenta.telefono
             data['foto'] = cuenta.foto
-            data['puesto'] = cuenta.puesto.id
-            data['area'] = cuenta.area.id
+            data['puesto'] = cuenta.puesto
+            data['area'] = cuenta.area
             data['empresa_id'] = cuenta.empresa_id
             data['numeroEmpleado'] = cuenta.numeroEmpleado
             data['is_admin'] = cuenta.is_admin
