@@ -60,14 +60,14 @@ class  Empaque(models.Model):
         return self.codigo_qr
     
 class Ticket(models.Model):
-    fecha_cirugia = models.DateTimeField(auto_now_add=True)
+    fecha_cirugia = models.DateTimeField(max_length=250, null=True, blank=True, default='')
     habitacion = models.IntegerField( null=True, blank=True, default=0)
     paciente = models.CharField(max_length=250, null=True, blank=True, default='')
     sala = models.IntegerField( null=True, blank=True, default=0)
     turno = models.IntegerField( null=True, blank=True, default=0)
     registro = models.CharField(max_length=100, null=True, blank=True, default='')
     edad = models.IntegerField( null=True, blank=True, default=0)
-    fecha_nacimiento = models.DateTimeField(auto_now_add=True)
+    fecha_nacimiento = models.DateTimeField(max_length=250, null=True, blank=True, default='')
     diagnostico = models.CharField(max_length=100, null=True, blank=True, default='')
     cirugia = models.CharField(max_length=250, null=True, blank=True, default='')
     solicita = models.CharField(max_length=250, null=True, blank=True, default='')
