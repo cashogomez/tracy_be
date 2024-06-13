@@ -73,18 +73,18 @@ class MiPerfilManager(BaseUserManager):
         
 
 class Perfil(AbstractBaseUser):
-    nombre = models.CharField(max_length=50)
-    materno = models.CharField(max_length=50)
-    paterno = models.CharField(max_length=50)
-    username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(max_length=50, unique=True)
-    telefono = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=250)
+    materno = models.CharField(max_length=250)
+    paterno = models.CharField(max_length=250)
+    username = models.CharField(max_length=250, unique=True)
+    email = models.EmailField(max_length=250, unique=True)
+    telefono = models.CharField(max_length=250)
     foto = models.CharField(max_length=500, default='')
     
-    puesto = models.CharField(max_length=50)
-    area =  models.CharField(max_length=50)
-    empresa_id =  models.CharField(max_length=50)
-    numeroEmpleado = models.CharField(max_length=50)
+    puesto = models.CharField(max_length=250)
+    area =  models.CharField(max_length=250)
+    empresa_id =  models.CharField(max_length=250)
+    numeroEmpleado = models.CharField(max_length=250)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
