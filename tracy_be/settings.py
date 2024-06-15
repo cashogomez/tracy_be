@@ -179,4 +179,3 @@ SIMPLE_JWT = {
 }
 
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://45.136.19.245:8000", "http://45.136.19.245:8000", "http://127.0.0.1:5200","http://45.136.19.245","https://127.0.0.1:8000", "https://45.136.19.245:8000", "https://45.136.19.245:8000", "https://127.0.0.1:5200","https://45.136.19.245", "https://tracy.solutions" ]
-SECURE_SSL_REDIRECT = True
