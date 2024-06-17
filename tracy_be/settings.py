@@ -33,9 +33,8 @@ SECRET_KEY = 'django-insecure-q!c=_hnzpxq&&chv3-c4dp9eu!cv92cgoy1p1@@=d0qwgj^xtl
 #SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-DEBUG = bool(os.environ.get("DEBUG", default=1))
-#DEBUG = False
+#DEBUG = bool(os.environ.get("DEBUG", default=1))
+DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1","45.136.19.245", "localhost", "https://127.0.0.1","https://45.136.19.245", "https://tracy.solutions", "[::1]"]
 #ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
