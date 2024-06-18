@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
-from tracybe_app.models import (CiclosEquipo, Estatus, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque,  Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from perfiles.api.serializers import PerfilSerializer
+from tracybe_app.models import (CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador,  Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -262,3 +263,37 @@ class CiclosEquipoSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+class EventoEsterilizacionSerializer(serializers.ModelSerializer):
+    materialempaque = MaterialEmpaqueSerializer()
+    perfil = PerfilSerializer()
+    ciclo = CicloSerializer()
+    
+    class Meta:
+        model = EventoEsterilizacion
+        fields = "__all__"
+        
+    def create(self, validated_data) -> EventoEsterilizacion:
+        eventoesterilizacion = EventoEsterilizacion.objects.create(**validated_data)
+        return eventoesterilizacion
+    
+    def update(self, instance, validated_data) -> EventoEsterilizacion:
+        instance.save()
+        return instance
+
+class MaterialEnEsterilizadorSerializer(serializers.ModelSerializer):
+    eventoesterilizador = EventoEsterilizacionSerializer()
+    
+    class Meta:
+        model = MaterialEnEsterilizador
+        fields = "__all__"
+        
+    def create(self, validated_data) -> MaterialEnEsterilizador:
+        materialenesterilizador= MaterialEnEsterilizador.objects.create(**validated_data)
+        return  materialenesterilizador
+    
+    def update(self, instance, validated_data) -> MaterialEnEsterilizador:
+        instance.save()
+        return instance
+    
+ 

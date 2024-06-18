@@ -229,4 +229,31 @@ class Paciente(models.Model):
     
     def __str__(self):
         return  self.nombre+self.paterno+self.materno
+
+
+class EventoEsterilizacion(models.Model):
+    perfil_inicio = models.CharField(max_length=250, null=True, blank=True, default='')
+    hora_inicio = models.TimeField(default=datetime.time(8, 0, 0) ) 
+    fecha_inicio = models.DateTimeField(null=True, blank=True)
+    perfil_final = models.CharField(max_length=250, null=True, blank=True, default='')
+    hora_final = models.TimeField(default=datetime.time(8, 0, 0) ) 
+    fecha_final = models.DateTimeField(null=True, blank=True)
+    ciclo = models.OneToOneField(Ciclo, on_delete=models.CASCADE, blank=True, null=True, related_name="cicloEventoEsterilizacion")
+    cicloDiario = models.IntegerField(null=True, blank=True, default=0)
+    
+    def __str__(self):
+        return 'Evento Esterilizacion: ' + str(self.perfil_inicio)
+    
+    
+class MaterialEnEsterilizador(models.Model):
+    setId = models.IntegerField(null=True, blank=True, default=0)
+    nombreSet = models.CharField(max_length=250, null=True, blank=True, default='')
+    cantidad = models.IntegerField(null=True, blank=True, default=0)
+    turno = models.IntegerField(null=True, blank=True, default=0)
+    eventoEsterilizador = models.ForeignKey(EventoEsterilizacion, on_delete=models.CASCADE, blank=True, null=True, related_name='eventoesterilzadorMAterial')
+
+    def __str__(self):
+        return  self.nombreSet
+    
+    
     

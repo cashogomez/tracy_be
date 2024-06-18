@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador, Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, EventoEsterilizacionSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, MaterialEnEsterilizadorSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -750,4 +750,92 @@ class DetalleEstatusAV(APIView):
         except Estatus.DoesNotExist:
             return Response({'error': 'Estatus no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         estatus.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+
+# ************************ MaterialEnEsterilizador  **********************
+class MaterialEnEsterilizadorAV(APIView):
+    def get(self, request):
+        materialenesterilizador = MaterialEnEsterilizador.objects.all()
+        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = MaterialEnEsterilizadorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+
+class DetalleMaterialEnEsterilizadorAV(APIView):
+    def get(self, request, pk):
+        try:
+            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El Material en Esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MaterialEnEsterilizador(materialenesterilizador, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El Material En Esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        materialenesterilizador.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+    
+# ************************ MaterialEnEsterilizador  **********************
+class EventoEsterilizacionAV(APIView):
+    def get(self, request):
+        materialenesterilizador = EventoEsterilizacion.objects.all()
+        serializer = EventoEsterilizacionSerializer(materialenesterilizador, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = EventoEsterilizacionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+
+class DetalleEventoEsterilizacioAV(APIView):
+    def get(self, request, pk):
+        try:
+            eventoesterilizacion = EventoEsterilizacion.objects.get(pk=pk)
+        except EventoEsterilizacion.DoesNotExist:
+            return Response({'error': 'El evento de esterilizacion no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = EventoEsterilizacion(eventoesterilizacion, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            materialenesterilizador = EventoEsterilizacion.objects.get(pk=pk)
+        except EventoEsterilizacion.DoesNotExist:
+            return Response({'error': 'El evento de esterilización no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = EventoEsterilizacionSerializer(materialenesterilizador, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            eventoesterilizacion = EventoEsterilizacion.objects.get(pk=pk)
+        except EventoEsterilizacion.DoesNotExist:
+            return Response({'error': 'El evento de esterilizacion no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        eventoesterilizacion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
