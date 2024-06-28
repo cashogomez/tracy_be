@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #from tracybe_app.api.views import lista_instrumento, detalle_instrumento
-from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate,  DetalleCicloAV, DetalleCiclosEquipo, DetalleEstatusAV, DetalleEventoEsterilizacioAV, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleMaterialEnEsterilizadorAV, DetalleSetTicket, DetalleTicketAV, EmpaqueCreate, EstatusAV, EventoEsterilizacionAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, MaterialEmpaqueAV, MaterialEnEsterilizadorAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetEmpaqueCreate, SetTicketCreate, TicketAV,
+from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate,  DetalleCicloAV, DetalleCiclosEquipo, DetalleEstatusAV, DetalleEventoEsterilizacionAV, DetalleEventoEsterilizacionEsterilizadorAV, DetalleEventoEsterilizacionAV, DetalleEventoEsterilizacionEsterilizadorAV, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleMaterialEnEsterilizadorAV, DetalleMaterialEnEsterilizadorEsterilizadorAV, DetalleSetTicket, DetalleSetTicketOA, DetalleTicketAV, DetalleTicketOAAV, EmpaqueCreate, EstatusAV,  EventoEsterilizacionAV, EventoEsterilizacionCrearAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, ListaSetTicketOA, MaterialEmpaqueAV, MaterialEnEsterilizadorAV, MaterialEnEsterilizadorCrearAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetEmpaqueCreate, SetTicketCreate, SetTicketOACreate, TicketAV, TicketOAAV,
                                     TurnoAV, DetalleTurnoAV, EtapaAV, DetalleEtapaAV, AreaSolicitanteAV, DetalleAreaSolicitanteAV, 
                                     EventoLavadoCreate, ListaEventoLavado, DetalleEventoLavado, EventoCreate, ListaEvento, DetalleEvento,
-                                    EquipoAV, DetalleEquipoAV )
+                                    EquipoAV, DetalleEquipoAV, EventoEsterilizacionCrearAV )
 
 
 urlpatterns = [
@@ -72,11 +72,21 @@ urlpatterns = [
     path('estatus/<int:pk>', DetalleEstatusAV.as_view(), name='estatus-detail'),
     
     path('eventoesterilizacion/', EventoEsterilizacionAV.as_view(), name='lista_eventoesterilizacion'),
-    path('eventoesterilizacio/<int:pk>', DetalleEventoEsterilizacioAV.as_view(), name='empaque-detail'),
-
+    path('eventoesterilizacion/<int:pk>', DetalleEventoEsterilizacionAV.as_view(), name='eventoesterilizacion-detail'),
+    path('eventoesterilizacion/ciclo/<int:pk>', EventoEsterilizacionCrearAV.as_view(), name='eventoesterilizacion-crear'),
+    path('eventoesterilizacion/esterilizador/<int:pk>', DetalleEventoEsterilizacionEsterilizadorAV.as_view(), name='eventoesterilizacion-crear'),
     
-    path('MaterialEnEsterilizador/', MaterialEnEsterilizadorAV.as_view(), name='lista_empaque'),path('MaterialEnEsterilizador/materialempaque/<int:pk>', EmpaqueCreate.as_view(), name='crear_empaque'),
-    path('MaterialEnEsterilizador/<int:pk>', DetalleMaterialEnEsterilizadorAV.as_view(), name='empaque-detail'),
-
+    path('MaterialEnEsterilizador/', MaterialEnEsterilizadorAV.as_view(), name='lista_MaterialEnEsterilizador'),
+    path('MaterialEnEsterilizador/<int:pk>', DetalleMaterialEnEsterilizadorAV.as_view(), name='MaterialEnEsterilizador-detail'),
+     path('MaterialEnEsterilizador/esterilizador/<int:pk>', DetalleMaterialEnEsterilizadorEsterilizadorAV.as_view(), name='MaterialEnEsterilizador-detail'),
+    path('MaterialEnEsterilizador/eventoesterilizacion/', MaterialEnEsterilizadorCrearAV.as_view(), name='MaterialEnEsterilizador-crear'),
     
+    
+    path('ticketoa/', TicketOAAV.as_view(), name='lista_ticketoa'),
+    path('ticketoa/<int:pk>', DetalleTicketOAAV.as_view(), name='ticketoa-detail'),
+    
+    
+    path('ticketoa/<int:pk>/set/<int:ik>', SetTicketOACreate.as_view(), name= 'setticketoa-create'),
+    path('ticketoa/<int:pk>/set/', ListaSetTicketOA.as_view(), name='ListaSetTicketOA-list'),
+    path('ticketoa/set/<int:pk>', DetalleSetTicketOA.as_view(), name='ticketsetia-detail'),
 ]

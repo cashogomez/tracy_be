@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
 from perfiles.api.serializers import PerfilSerializer
-from tracybe_app.models import (CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador,  Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador,  Set, Empaque, SetEmpaque, SetTicket, SetTicketOA, Ticket, TicketOA, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -217,6 +217,7 @@ class SetTicketSerializer(serializers.ModelSerializer):
         return instance
 
 
+
 class InstrumentoTicketSerializer(serializers.ModelSerializer):
     instrumento = InstrumentoSerializer()
     ticket = TicketSerializer()
@@ -234,8 +235,6 @@ class InstrumentoTicketSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data) -> InstrumentoTicket:
         #instance.ticket = validated_data.get('ticket', instance.ticket)
         instance.cantidad = validated_data.get('cantidad', instance.cantidad)
-        print('--------------------------')
-        print(instance)
         #conn = InstrumentoTicket.objects.update(**validated_data)
         instance.save()
         return instance
@@ -256,7 +255,7 @@ class CiclosEquipoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data) -> CiclosEquipo:
         #instance.ticket = validated_data.get('ticket', instance.ticket)
         #instance.set = validated_data.get('set', instance.set)
-        #instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        #instance.perfil_final = validated_data.get('perfil_final', instance.perfil_final)
         #print('--------------------------')
         #print(instance.ticket)
         #conn = SetTicket.objects.update(**validated_data)
@@ -265,8 +264,6 @@ class CiclosEquipoSerializer(serializers.ModelSerializer):
 
 
 class EventoEsterilizacionSerializer(serializers.ModelSerializer):
-    materialempaque = MaterialEmpaqueSerializer()
-    perfil = PerfilSerializer()
     ciclo = CicloSerializer()
     
     class Meta:
@@ -278,11 +275,12 @@ class EventoEsterilizacionSerializer(serializers.ModelSerializer):
         return eventoesterilizacion
     
     def update(self, instance, validated_data) -> EventoEsterilizacion:
+        print('ki voy')
+        instance.perfil_final = validated_data.get('perfil_final', instance.perfil_final)
         instance.save()
         return instance
 
 class MaterialEnEsterilizadorSerializer(serializers.ModelSerializer):
-    eventoesterilizador = EventoEsterilizacionSerializer()
     
     class Meta:
         model = MaterialEnEsterilizador
@@ -296,4 +294,32 @@ class MaterialEnEsterilizadorSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
+    
+        
+class TicketOASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketOA
+        fields = '__all__'
  
+class SetTicketOASerializer(serializers.ModelSerializer):
+    ticket = TicketOASerializer()
+    set = SetSerializer()
+
+    class Meta:
+        model = SetTicketOA
+        fields = "__all__"
+
+    def create(self, validated_data) -> SetTicketOA:
+        # create connection
+        conn = SetTicketOA.objects.create(**validated_data)
+        return conn
+    
+    def update(self, instance, validated_data) -> SetTicketOA:
+        #instance.ticket = validated_data.get('ticket', instance.ticket)
+        #instance.set = validated_data.get('set', instance.set)
+        instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        #print('--------------------------')
+        #print(instance.ticket)
+        #conn = SetTicket.objects.update(**validated_data)
+        instance.save()
+        return instance

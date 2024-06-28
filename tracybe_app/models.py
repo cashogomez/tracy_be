@@ -85,6 +85,21 @@ class Ticket(models.Model):
     def __str__(self):
         return  'Ticket '+str(self.id)
     
+class TicketOA(models.Model):
+    prioridad = models.PositiveSmallIntegerField()
+    area_prestamo= models.CharField(max_length=250, null=True, blank=True, default='')
+    fecha_prestamo= models.DateTimeField(max_length=250, null=True, blank=True, default='')
+    recepcion_usuario= models.CharField(max_length=250, null=True, blank=True, default='')
+    recepcion_usuario_recepcion= models.CharField(max_length=250, null=True, blank=True, default='')
+    devolucion_usuario=models.CharField(max_length=250, null=True, blank=True, default='')
+    entrega_usuario = models.CharField(max_length=250, null=True, blank=True, default='')
+    notas = models.CharField(max_length=900, null=True, blank=True, default='')
+    estatus =  models.CharField(max_length=900, null=True, blank=True, default='')
+    
+    
+    def __str__(self):
+        return  'TicketOA '+str(self.id)
+    
 class Set(models.Model):
     numero = models.PositiveIntegerField(null=True, default=0)
     maximo = models.PositiveIntegerField(null=True, default=0)
@@ -197,6 +212,11 @@ class SetTicket(models.Model):
     set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
     ticket =  models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
+    
+class SetTicketOA(models.Model):
+    set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
+    ticket =  models.ForeignKey(TicketOA, on_delete=models.DO_NOTHING, blank=True, null=True)
+    cantidad = models.IntegerField( blank=True, null=True)
 
 class InstrumentoTicket(models.Model):
     instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -232,26 +252,27 @@ class Paciente(models.Model):
 
 
 class EventoEsterilizacion(models.Model):
+    id_esterilizador = models.IntegerField(null=True, blank=True, default=0)
     perfil_inicio = models.CharField(max_length=250, null=True, blank=True, default='')
-    hora_inicio = models.TimeField(default=datetime.time(8, 0, 0) ) 
-    fecha_inicio = models.DateTimeField(null=True, blank=True)
+    hora_inicio = models.TimeField(max_length=250, null=True, blank=True, default='') 
+    fecha_inicio = models.CharField(null=True, blank=True)
     perfil_final = models.CharField(max_length=250, null=True, blank=True, default='')
-    hora_final = models.TimeField(default=datetime.time(8, 0, 0) ) 
-    fecha_final = models.DateTimeField(null=True, blank=True)
-    ciclo = models.OneToOneField(Ciclo, on_delete=models.CASCADE, blank=True, null=True, related_name="cicloEventoEsterilizacion")
+    hora_final = models.TimeField(max_length=250, null=True, blank=True, default='') 
+    fecha_final = models.CharField(null=True, blank=True)
+    ciclo = models.ForeignKey(Ciclo, on_delete=models.CASCADE, blank=True, null=True, related_name="cicloEventoEsterilizacion")
     cicloDiario = models.IntegerField(null=True, blank=True, default=0)
     
     def __str__(self):
-        return 'Evento Esterilizacion: ' + str(self.perfil_inicio)
+        return 'Evento Esterilizacion: ' + self.fecha_inicio
     
     
 class MaterialEnEsterilizador(models.Model):
+    id_esterilizador = models.IntegerField(null=True, blank=True, default=0)
     setId = models.IntegerField(null=True, blank=True, default=0)
     nombreSet = models.CharField(max_length=250, null=True, blank=True, default='')
     cantidad = models.IntegerField(null=True, blank=True, default=0)
     turno = models.IntegerField(null=True, blank=True, default=0)
-    eventoEsterilizador = models.ForeignKey(EventoEsterilizacion, on_delete=models.CASCADE, blank=True, null=True, related_name='eventoesterilzadorMAterial')
-
+    eventoesterilizador = models.IntegerField(null=True, blank=True, default=0)
     def __str__(self):
         return  self.nombreSet
     

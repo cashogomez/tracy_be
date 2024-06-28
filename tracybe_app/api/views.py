@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador, Set, Empaque, SetEmpaque, SetTicket, Ticket, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador, Set, Empaque, SetEmpaque, SetTicket, SetTicketOA, Ticket, TicketOA, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, EventoEsterilizacionSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, MaterialEnEsterilizadorSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketSerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, EventoEsterilizacionSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, MaterialEnEsterilizadorSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketOASerializer, SetTicketSerializer, TicketOASerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -752,72 +752,23 @@ class DetalleEstatusAV(APIView):
         estatus.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
 
-# ************************ MaterialEnEsterilizador  **********************
-class MaterialEnEsterilizadorAV(APIView):
-    def get(self, request):
-        materialenesterilizador = MaterialEnEsterilizador.objects.all()
-        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, many=True, context = {"request": request})
-        return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = MaterialEnEsterilizadorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
 
-class DetalleMaterialEnEsterilizadorAV(APIView):
-    def get(self, request, pk):
-        try:
-            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
-        except MaterialEnEsterilizador.DoesNotExist:
-            return Response({'error': 'El Material en Esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = MaterialEnEsterilizador(materialenesterilizador, context={'request': request})
-        return Response(serializer.data)
-    
-    def put(self, request, pk):
-        try:
-            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
-        except MaterialEnEsterilizador.DoesNotExist:
-            return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, data=request.data,  context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def delete(self, request, pk):
-        try:
-            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
-        except MaterialEnEsterilizador.DoesNotExist:
-            return Response({'error': 'El Material En Esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        materialenesterilizador.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT) 
-    
-# ************************ MaterialEnEsterilizador  **********************
+# ************************ EventoEsterilizacion  **********************
 class EventoEsterilizacionAV(APIView):
     def get(self, request):
         materialenesterilizador = EventoEsterilizacion.objects.all()
         serializer = EventoEsterilizacionSerializer(materialenesterilizador, many=True, context = {"request": request})
         return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = EventoEsterilizacionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+       
 
-class DetalleEventoEsterilizacioAV(APIView):
+class DetalleEventoEsterilizacionAV(APIView):
     def get(self, request, pk):
         try:
+            print(pk)
             eventoesterilizacion = EventoEsterilizacion.objects.get(pk=pk)
         except EventoEsterilizacion.DoesNotExist:
             return Response({'error': 'El evento de esterilizacion no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = EventoEsterilizacion(eventoesterilizacion, context={'request': request})
+        serializer = EventoEsterilizacionSerializer(eventoesterilizacion, context={'request': request})
         return Response(serializer.data)
     
     def put(self, request, pk):
@@ -839,3 +790,162 @@ class DetalleEventoEsterilizacioAV(APIView):
             return Response({'error': 'El evento de esterilizacion no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
         eventoesterilizacion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
+    
+class EventoEsterilizacionCrearAV(generics.CreateAPIView):
+
+    serializer_class = EventoEsterilizacionSerializer
+    
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        print(pk)
+        ciclo = Ciclo.objects.get(pk=pk)
+        return(serializer.save(ciclo=ciclo))
+
+class DetalleEventoEsterilizacionEsterilizadorAV(APIView):
+    def get(self, request, pk):
+        try:
+            print(pk)
+            eventoesterilizacion = EventoEsterilizacion.objects.filter(id_esterilizador=pk)
+        except EventoEsterilizacion.DoesNotExist:
+            return Response({'error': 'El evento de esterilizacion no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = EventoEsterilizacionSerializer(eventoesterilizacion, many=True, context={'request': request})
+        return Response(serializer.data)  
+    
+    # ************************ MaterialEnEsterilizador  **********************
+class MaterialEnEsterilizadorAV(APIView):
+    def get(self, request):
+        materialenesterilizador = MaterialEnEsterilizador.objects.all()
+        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = MaterialEnEsterilizadorSerializer(data=request.data)
+        print('Aqui voy')
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+
+class DetalleMaterialEnEsterilizadorAV(APIView):
+    def get(self, request, pk):
+        try:
+            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El Material en Esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El ciclo no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MaterialEnEsterilizadorSerializer(materialenesterilizador, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            materialenesterilizador = MaterialEnEsterilizador.objects.get(pk=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El Material En Esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        materialenesterilizador.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+
+class MaterialEnEsterilizadorCrearAV(generics.CreateAPIView):
+    serializer_class = MaterialEnEsterilizadorSerializer
+
+    def perform_create(self, serializer):
+        return(serializer.save())
+    
+class DetalleMaterialEnEsterilizadorEsterilizadorAV(APIView):
+    def get(self, request, pk):
+        try:
+            print(pk)
+            materialesterilizador = MaterialEnEsterilizador.objects.filter(id_esterilizador=pk)
+        except MaterialEnEsterilizador.DoesNotExist:
+            return Response({'error': 'El material del esterilizador no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MaterialEnEsterilizadorSerializer(materialesterilizador, many=True, context={'request': request})
+        return Response(serializer.data)  
+
+# ************************ TicketOA **********************
+class TicketOAAV(APIView):
+    def get(self, request):
+        etapas = TicketOA.objects.all()
+        serializer = TicketOASerializer(etapas, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = TicketOASerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DetalleTicketOAAV(APIView):
+    def get(self, request, pk):
+        try:
+            etapa = TicketOA.objects.get(pk=pk)
+        except TicketOA.DoesNotExist:
+            return Response({'error': 'El ticket de otras areas no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = TicketOASerializer(etapa, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            etapa = TicketOA.objects.get(pk=pk)
+        except TicketOA.DoesNotExist:
+            return Response({'error': 'El ticket de otras areas  no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = TicketOASerializer(etapa, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            etapa = TicketOA.objects.get(pk=pk)
+        except TicketOA.DoesNotExist:
+            return Response({'error': 'El ticket de otras areas no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        etapa.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+    
+    
+# ***********************  Set-TicketOA *************************
+
+class SetTicketOAViewSet(viewsets.ModelViewSet):
+    permission_classes = ()
+    queryset = SetTicketOA.objects.all()
+    serializer_class = SetTicketOASerializer
+
+class SetTicketOACreate(generics.CreateAPIView):
+
+    serializer_class = SetTicketOASerializer
+
+    def perform_create(self, serializer):
+        print('Iniciando')
+        pk = self.kwargs.get('pk')
+        ticketreal = TicketOA.objects.get(pk=pk)
+        ik = self.kwargs.get('ik')
+        setreal = Set.objects.get(pk=ik)
+        serializer.save(ticket=ticketreal, set=setreal)
+        
+class ListaSetTicketOA(generics.ListCreateAPIView):
+    serializer_class = SetTicketOASerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return SetTicketOA.objects.filter(ticket=pk)
+        
+    
+class DetalleSetTicketOA(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SetTicketOA.objects.all()
+    serializer_class = SetTicketOASerializer
+    
