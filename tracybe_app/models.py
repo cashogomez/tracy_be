@@ -197,6 +197,7 @@ class InstrumentoSet(models.Model):
     set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
     instrumento = models.ForeignKey(Instrumento, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
+    cantidad_recibida = models.IntegerField( blank=True, null=True)
     
 #class InstrumentoEmpaque(models.Model):
 #    empaque =  models.ForeignKey(Empaque, on_delete=models.DO_NOTHING, blank=True, null=True)
