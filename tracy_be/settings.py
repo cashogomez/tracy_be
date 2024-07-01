@@ -178,12 +178,16 @@ SIMPLE_JWT = {
     
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "http://45.136.19.245", "https://45.136.19.245",  "https://127.0.0.1", "https://tracy.solutions",  "http://tracy.solutions"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost","https://localhost", "http://127.0.0.1", "http://45.136.19.245", "https://45.136.19.245",  "https://127.0.0.1", "https://tracy.solutions",  "http://tracy.solutions"]
 
 #****************************************
-#SECURE_SSL_REDIRECT = True
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_SECONDS = 1
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_SSL_REDIRECT = True
 
 CORS_ORIGIN_WHITELIST =[
     'http://localhost',

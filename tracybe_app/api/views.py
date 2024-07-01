@@ -399,6 +399,19 @@ class ListaInstrumentoSet(generics.ListCreateAPIView):
 class DetalleInstrumentoSet(generics.RetrieveUpdateDestroyAPIView):
     queryset = InstrumentoSet.objects.all()
     serializer_class = InstrumentoSetSerializer
+    
+    def perform_update(self, serializer):
+            try:
+                instrumentoset = InstrumentoSet.objects.get(pk=self.kwargs['pk'])
+            except InstrumentoSet.DoesNotExist:
+                return Response({'error': 'Instrumento Set no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+            if serializer.is_valid():
+                serializer.save(set=instrumentoset.set, instrumento=instrumentoset.instrumento)
+                return Response(serializer.data)
+            else: 
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # ***********************  CICLO - EQUIPO *************************
 
