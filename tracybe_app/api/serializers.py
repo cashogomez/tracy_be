@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timezone
 from perfiles.api.serializers import PerfilSerializer
-from tracybe_app.models import (CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador,  Set, Empaque, SetEmpaque, SetTicket, SetTicketOA, Ticket, TicketOA, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
+from tracybe_app.models import (CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento,  InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador, ReporteIncidencia,  Set, Empaque, SetEmpaque, SetTicket, SetTicketOA, Ticket, TicketOA, Turno, Etapa, AreaSolicitante, Evento,Equipo, 
                                 EventoLavado, Ciclo)
 
 
@@ -210,6 +210,7 @@ class SetTicketSerializer(serializers.ModelSerializer):
         #instance.ticket = validated_data.get('ticket', instance.ticket)
         #instance.set = validated_data.get('set', instance.set)
         instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        instance.entregados = validated_data.get('entregados', instance.entregados)
         #print('--------------------------')
         #print(instance.ticket)
         #conn = SetTicket.objects.update(**validated_data)
@@ -323,3 +324,10 @@ class SetTicketOASerializer(serializers.ModelSerializer):
         #conn = SetTicket.objects.update(**validated_data)
         instance.save()
         return instance
+
+
+
+class ReporteIncidenciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReporteIncidencia
+        fields = '__all__'

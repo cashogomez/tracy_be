@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 #from tracybe_app.api.views import lista_instrumento, detalle_instrumento
-from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate,  DetalleCicloAV, DetalleCiclosEquipo, DetalleEstatusAV, DetalleEventoEsterilizacionAV, DetalleEventoEsterilizacionEsterilizadorAV, DetalleEventoEsterilizacionAV, DetalleEventoEsterilizacionEsterilizadorAV, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleMaterialEnEsterilizadorAV, DetalleMaterialEnEsterilizadorEsterilizadorAV, DetalleSetTicket, DetalleSetTicketOA, DetalleTicketAV, DetalleTicketOAAV, EmpaqueCreate, EstatusAV,  EventoEsterilizacionAV, EventoEsterilizacionCrearAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, ListaSetTicketOA, MaterialEmpaqueAV, MaterialEnEsterilizadorAV, MaterialEnEsterilizadorCrearAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetEmpaqueCreate, SetTicketCreate, SetTicketOACreate, TicketAV, TicketOAAV,
+from tracybe_app.api.views import ( CicloAV, CiclosEquipoCreate,  DetalleCicloAV, DetalleCiclosEquipo, DetalleEstatusAV, DetalleEventoEsterilizacionAV, DetalleEventoEsterilizacionEsterilizadorAV, DetalleEventoEsterilizacionAV, DetalleEventoEsterilizacionEsterilizadorAV, DetalleInstrumentoSet, DetalleInstrumentoTicket, DetalleMaterialEmpaqueAV, DetalleMaterialEnEsterilizadorAV, DetalleMaterialEnEsterilizadorEsterilizadorAV, DetalleReporteIncidenciaAV, DetalleSetTicket, DetalleSetTicketOA, DetalleTicketAV, DetalleTicketOAAV, EmpaqueCreate, EstatusAV,  EventoEsterilizacionAV, EventoEsterilizacionCrearAV, InstrumentoAV, DetalleInstrumentoAV, InstrumentoSetCreate, InstrumentoSetViewSet, InstrumentoTicketCreate, ListaCiclosEquipo, ListaInstrumentoSet, ListaInstrumentoTicket, ListaSetTicket, ListaSetTicketOA, MaterialEmpaqueAV, MaterialEnEsterilizadorAV, MaterialEnEsterilizadorCrearAV, ReporteIncidenciaAV, SetAV, DetalleSetAV, EmpaqueAV, DetalleEmpaqueAV, BusquedaEmpaqueAV, SetEmpaqueCreate, SetTicketCreate, SetTicketOACreate, TicketAV, TicketOAAV,
                                     TurnoAV, DetalleTurnoAV, EtapaAV, DetalleEtapaAV, AreaSolicitanteAV, DetalleAreaSolicitanteAV, 
                                     EventoLavadoCreate, ListaEventoLavado, DetalleEventoLavado, EventoCreate, ListaEvento, DetalleEvento,
                                     EquipoAV, DetalleEquipoAV, EventoEsterilizacionCrearAV )
@@ -89,4 +89,11 @@ urlpatterns = [
     path('ticketoa/<int:pk>/set/<int:ik>', SetTicketOACreate.as_view(), name= 'setticketoa-create'),
     path('ticketoa/<int:pk>/set/', ListaSetTicketOA.as_view(), name='ListaSetTicketOA-list'),
     path('ticketoa/set/<int:pk>', DetalleSetTicketOA.as_view(), name='ticketsetia-detail'),
+    
+    
+    path('reporteincidencia/', ReporteIncidenciaAV.as_view(), name='lista_reporteincidencia'),
+    path('reporteincidencia/<int:pk>', DetalleReporteIncidenciaAV.as_view(), name='reporteincidencia-detail'),
+    
+    
+    
 ]

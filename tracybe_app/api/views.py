@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from tracybe_app.api.permisos import IsAdminOrReadOnly, IsEventoUserOrReadOnly
-from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador, Set, Empaque, SetEmpaque, SetTicket, SetTicketOA, Ticket, TicketOA, Turno, Etapa, AreaSolicitante, Evento
+from tracybe_app.models import Ciclo, CiclosEquipo, Estatus, EventoEsterilizacion, Instrumento, InstrumentoSet, InstrumentoTicket, MaterialEmpaque, MaterialEnEsterilizador, ReporteIncidencia, Set, Empaque, SetEmpaque, SetTicket, SetTicketOA, Ticket, TicketOA, Turno, Etapa, AreaSolicitante, Evento
 from tracybe_app.models import Equipo, EventoLavado
-from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, EventoEsterilizacionSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, MaterialEnEsterilizadorSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketOASerializer, SetTicketSerializer, TicketOASerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
+from tracybe_app.api.serializers import  CicloSerializer, CiclosEquipoSerializer, EstatusSerializer, EventoEsterilizacionSerializer, InstrumentoSerializer, InstrumentoSetSerializer, InstrumentoTicketSerializer, MaterialEmpaqueSerializer, MaterialEnEsterilizadorSerializer, ReporteIncidenciaSerializer, SetEmpaqueSerializer, SetSerializer, EmpaqueSerializer, SetTicketOASerializer, SetTicketSerializer, TicketOASerializer, TicketSerializer, TurnoSerializer, EtapaSerializer, AreaSolicitanteSerializer, EventoSerializer
 from tracybe_app.api.serializers import EquipoSerializer, EventoLavadoSerializer
 from rest_framework import status
 from rest_framework.views import APIView
@@ -962,3 +962,51 @@ class DetalleSetTicketOA(generics.RetrieveUpdateDestroyAPIView):
     queryset = SetTicketOA.objects.all()
     serializer_class = SetTicketOASerializer
     
+    
+  
+  
+# ************************ ReporteIncidencia **********************
+class ReporteIncidenciaAV(APIView):
+    def get(self, request):
+        etapas = ReporteIncidencia.objects.all()
+        serializer = ReporteIncidenciaSerializer(etapas, many=True, context = {"request": request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = ReporteIncidenciaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DetalleReporteIncidenciaAV(APIView):
+    def get(self, request, pk):
+        try:
+            etapa = ReporteIncidencia.objects.get(pk=pk)
+        except ReporteIncidencia.DoesNotExist:
+            return Response({'error': 'Reporte No Encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ReporteIncidenciaSerializer(etapa, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            etapa = ReporteIncidencia.objects.get(pk=pk)
+        except ReporteIncidencia.DoesNotExist:
+            return Response({'error': 'Reporte No Encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ReporteIncidenciaSerializer(etapa, data=request.data,  context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk):
+        try:
+            etapa = ReporteIncidencia.objects.get(pk=pk)
+        except ReporteIncidencia.DoesNotExist:
+            return Response({'error': 'El ticket de otras areas no se ha encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        etapa.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+  

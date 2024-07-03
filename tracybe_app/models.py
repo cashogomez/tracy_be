@@ -82,6 +82,11 @@ class Ticket(models.Model):
     notas = models.CharField(max_length=900, null=True, blank=True, default='')
     activo = models.BooleanField(default=False, null=True, blank=True)
     
+    recepcion_usuario= models.CharField(max_length=250, null=True, blank=True, default='')
+    recepcion_usuario_recepcion= models.CharField(max_length=250, null=True, blank=True, default='')
+    devolucion_usuario=models.CharField(max_length=250, null=True, blank=True, default='')
+    entrega_usuario = models.CharField(max_length=250, null=True, blank=True, default='')
+    
     def __str__(self):
         return  'Ticket '+str(self.id)
     
@@ -213,6 +218,7 @@ class SetTicket(models.Model):
     set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
     ticket =  models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField( blank=True, null=True)
+    entregados= models.IntegerField( blank=True, null=True)
     
 class SetTicketOA(models.Model):
     set = models.ForeignKey(Set, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -277,5 +283,17 @@ class MaterialEnEsterilizador(models.Model):
     def __str__(self):
         return  self.nombreSet
     
+
+################################################################ Incidencias    
+    
+class ReporteIncidencia(models.Model):
+    lugar = models.CharField(max_length=250, null=True, blank=True, default='')
+    fecha = models.DateTimeField(max_length=250, null=True, blank=True, default='')
+    usuario = models.CharField(max_length=250, null=True, blank=True, default='')
+    turno = models.CharField(max_length=250, null=True, blank=True, default='')
+    incidencia = models.CharField(max_length=250, null=True, blank=True, default='')
+    comentario =models.CharField(max_length=250, null=True, blank=True, default='')
     
     
+    def __str__(self):
+        return  'ReporteIncidencia '+str(self.id)
